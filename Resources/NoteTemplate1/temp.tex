@@ -3,10 +3,17 @@
 \usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
 \usepackage{geometry}
 \geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
 
-%\title{\textbf{Title}}
-%\author{Min}
-%\date{\today}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Title}}
+\author{Min, Xia}
+\date{\today}
 \linespread{1.6}
 \definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
 \definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
@@ -24,10 +31,10 @@
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \begin{document}
-%\maketitle
+\maketitle
 \setcounter{page}{1}
 \pagenumbering{arabic}
-\section[Section title sans citation]{Title\cite{press2007numerical}}
+\section{Section\cite{press2007numerical}}
     Notes here.
 \newpage
 \bibliographystyle{plain}

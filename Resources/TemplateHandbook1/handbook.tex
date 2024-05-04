@@ -1,12 +1,20 @@
 \documentclass[12pt, a4paper, oneside]{article}
 \usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
-\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode,lipsum}
 \usepackage{geometry}
 \geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
 
-%\title{\textbf{Title}}
-%\author{Min}
-%\date{\today}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Handbook of NoteTemplate1}}
+\author{Min, Xia}
+\date{\today}
 \linespread{1.6}
 \definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
 \definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
@@ -24,12 +32,11 @@
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \begin{document}
-%\maketitle
+\maketitle
 \setcounter{page}{1}
 \pagenumbering{arabic}
-\section[Section title sans citation]{Handbook of NoteTemplate1}
-    Notes here.
-\newpage
-% \bibliographystyle{plain}
-% \bibliography{ref}
+    Start a new note using NoteTemplate1/temp.tex. All reference should be added into ref.bib and cite with $\backslash$cite\{xxx\}.
+    
+\section{Lorem}
+    \lipsum[1-10]
 \end{document}
