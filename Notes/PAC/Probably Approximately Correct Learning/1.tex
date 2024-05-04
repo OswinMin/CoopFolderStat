@@ -1,0 +1,96 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+
+%\title{\textbf{Title}}
+%\author{Min}
+%\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+%\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section[Section title sans citation]{The probably approximately correct (PAC) and other learning models\cite{haussler2018probably}}
+\begin{definition}
+    Give some basic definition in ML task.
+
+    \begin{itemize}
+        \item Instance space: domain of $X$, where $X$ is the sample population. If focus on object with $n$ boolean attributes that is one example with $n$ attributes $x_{i1},\cdots,x_{in}$, instance space is $\{0,1\}^n$.
+        \item Instance: instance space is a large set and instance is one item in it.
+        \item Concept: concept is a subset of instance space.
+        \item Hypothesis: also a subset of instance space.
+    \end{itemize}
+\end{definition}
+As instance space is understood as sample population, a distribution $P(x)$ can be added to it. Given concept $c$ and hypothesis $h$, the error of $h$ according to $c$ is
+\begin{equation*}
+    Error(h)=\int_{h\Delta c}dP(x)
+\end{equation*}
+where $h\Delta c=(h\backslash c)\cup(c\backslash h)$.
+
+
+Next define PAC learnablility. Assume for any length of attributes $n$ we have concept sets $C_n$, which is a subset family of instance space. And define Hypothesis family $H_n$ similarly. An algorithm finds $h\in H_n$ is approximate some concept $c\in C_n$.
+
+
+Given instance space $S$. First a $c\in C_n$ is given, for any distribution $P$ over $S$, $0<\varepsilon,\delta<1$, select $N(n,\varepsilon,\delta)$ samples $D$ in $c$ based on distribution $P$. To be specific, an item in $D$ is $(x,\mathbbm{1}_c(x))$ which contains the label(whether $x$ in $c$ or note). If with probability at least $1-\delta$ $A$ returns $h$ with $Error(h)<\varepsilon$, we call $A$ is PAC learnable.
+\begin{remark}
+    $S$, $C_n$ are given. First select \textbf{any $c,P$}, $D$ relies on $P$, $h$ relies on $A,D$, thus randomness comes from $D$. Means
+    \begin{equation*}
+        \mathbb{P}_{D\sim P^{N(n,\varepsilon,\delta)}}(D:Error(h)=Error(A(D))<\varepsilon)>1-\delta,\forall c\in C_n,\forall P
+    \end{equation*}
+\end{remark}
+\begin{remark}
+    When $H_n=C_n$, we call it properly PAC learnable. However, most time we do not care what $H_n$ is, any existence of $A,H_n$ we can call $C_n$ PAC learnable.
+\end{remark}
+\begin{remark}
+    Hypothesis and concept are both subset of instance space, thus can be considered as function $S\rightarrow\{0,1\}$, where maps to $1$ means in the subset.
+\end{remark}
+
+
+Given some related results.
+\begin{itemize}
+    \item k-DNF concepts\cite{valiant1985learning}: for $n$ boolean variables $x_1,\cdots,x_n$, a k-DNF function has following structure:
+    \begin{equation*}
+        T_1\vee \cdots\vee T_r
+    \end{equation*}
+    where $T_i$ is conjunction of $k$ out of $n$ variables $x_1,\cdots,x_n$. Each concept in k-DNF corresponds to a k-DNF function. Thus algorithm tries to identify the k-DNF function based on given samples. Class of k-DNF is properly learnable for fixed k.
+    \item Perceptrons are PAC learnable\cite{blumer1989learnability}.
+\end{itemize}
+
+
+As the size of the hypothesis space increases, it may become easier to find a consistent hypothesis, but it will require more random training examples to insure that this hypothesis is accurate with high probability. \textbf{VC-dimension} is an important tool to quantify the complexity of a Hypothesis space\cite{shawe1993bounding} \cite{natarajan1989learning} \cite{vapnik2006estimation} \cite{haussler1987andrzej}. Give its definition
+\begin{definition}
+    Given a hypothesis space $H$, its VC-dimension is defined as $d$, which is the maximum number of instances in $S$, that can be labeled as $1,0$ in all $2^d$ possible ways. To be specific, assume instances to be $x_1,\cdots,x_d$, then exists $h_1,\cdots,h_{2^d}\in H$, subject to $\{(h_i(x_1),\cdots,h_i(x_d)):1\leq i\leq 2^d\}=\{1,0\}^d$.
+\end{definition}
+
+
+Criticism about PAC includes concerning the worst case. To be specific, the sample complexity is defined at the worst case over all $c\in C_n$ and all distribution $P$.
+\begin{remark}
+    Sample complexity refers to $N(n,\varepsilon,\delta)$.
+\end{remark}
+
+
+If prior information added to possible target concepts or instance space, a Bayesian approach can be used. 
+
+
+Another variant of the PAC model designed to address these issues is the probability of mistake model. Rather than measures the sample complexity, it measures the probability of wrong guess on $t$-th sample, given previous $t-1$ training samples.
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
