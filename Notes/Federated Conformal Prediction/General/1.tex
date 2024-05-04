@@ -64,6 +64,15 @@
         The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^n$ and $Y_{n+1}$.
     \end{definition}
 
+
+\section[Section title sans citation]{Federated Conformal Prediction Article1}
+    Efficient Conformal Prediction under Data Heterogeneity\cite{plassier2024efficient}
+
+
+    Idea: The marginal coverage is measured over all training data and test points. However, if there is a high variability in the coverage probability as a function of the training data, the test coverage probability may be substantially below $1-\alpha$ for a particular training set.
+    \begin{definition}[empirical miscoverage rate]
+        $\alpha(Tr)=P(Y_{n+1}\notin C_\alpha(X_{n+1})\Big|Tr)$
+    \end{definition}
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
