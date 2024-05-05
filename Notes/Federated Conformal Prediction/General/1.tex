@@ -74,9 +74,9 @@
     \end{itemize}
 
 
-    Let $R_{n+1}=\Big|Y_{n+1}-\hat{f}_1(X_{n+1})\Big|$. As
+    Let $R_{n+1}=\Big|Y_{n+1}-\hat{f}_1(X_{n+1})\Big|$. Let rank statistic $R_{(j)}$ be the $j$-th smallest in $R_i,\ i\in D_2$, and $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$. As
     \begin{equation*}
-        \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq\hat{q}_2 \right\}=\left\{ R_{n+1}\leq\lceil (1-\alpha)(n_2+1)\rceil\text{ smallest of }R_i,\ i\in D_2 \right\},
+        \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq\hat{q}_2 \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\},
     \end{equation*}
     and $R_i,\ i\in D_2,\ R_{n+1}$ are exchangeable, we have
     \begin{equation*}
@@ -86,12 +86,12 @@
 
     Assume a more general score function $V(x,y)=V((x,y);\hat{f}_1)$, define $R_i=V(X_i,Y_i)$ and change the conformal set to
     \begin{equation*}
-        C_\alpha(x)=\left\{ y:V(x,y)\leq\lceil (1-\alpha)(n_2+1)\rceil\text{ smallest of }R_i,\ i\in D_2 \right\}.
+        C_\alpha(x)=\left\{ y:V(x,y)\leq R_{(k_\alpha)} \right\}.
     \end{equation*}
 
 
     \begin{remark}
-        Further condition on calibration set, which means conditioning on entire training set $D$ and assume $R=V(x,y)$ has distribution $F$. Let rank statistic $R_{(j)}$ be the $j$-th smallest in $R_i,\ i\in D_2$, and $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$. As
+        Further condition on calibration set, which means conditioning on entire training set $D$ and assume $R=V(x,y)$ has distribution $F$. As
         \begin{equation*}
             \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\},
         \end{equation*}
@@ -104,7 +104,7 @@
         \end{align}
         rank statistic has density $F_{(j)}'(x)=jC_{n_2}^jx^{j-1}(1-x)^{n-j}f(x)$, thus take derivative on formula (\ref{formula1}), and $\mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D \right)$ has density
         \begin{equation*}
-            k_\alpha C_{n_2}^{k_\alpha}t^{k_\alpha-1}(1-t)^{n-k_\alpha}
+            k_\alpha C_{n_2}^{k_\alpha}t^{k_\alpha-1}(1-t)^{n-k_\alpha}.
         \end{equation*}
     \end{remark}
 
@@ -116,12 +116,12 @@
         \item Train point predictor $\hat{f}$ on training set and define residuals $R_i=\Big|Y_i-\hat{f}(X_i)\Big|,\ i\in[n],\ R_{n+1}=\Big|y-\hat{f}(x)\Big|$.
         \item Define $j$-th rank statistic of $R_i,\ i\in[n]$ as $R_{(j)}$, $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$, and conformal set
         \begin{equation*}
-            C_\alpha(x)=\left\{ y:R_{n+1}\leq R_{(k_\alpha)} \right\}
+            C_\alpha(x)=\left\{ y:R_{n+1}\leq R_{(k_\alpha)} \right\}.
         \end{equation*}
     \end{itemize}
     As $\left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\}$, and the exchangebility of data
     \begin{equation*}
-        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)\in\left[1-\alpha,1-\alpha+\dfrac{1}{n+1}\right)
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)\in\left[1-\alpha,1-\alpha+\dfrac{1}{n+1}\right).
     \end{equation*}
     
 
