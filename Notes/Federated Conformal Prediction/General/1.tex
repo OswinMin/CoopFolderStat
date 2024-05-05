@@ -59,10 +59,55 @@
 
         $C_\alpha$  satisfies distribution-free marginal coverage at level $1-\alpha$ if
         \begin{equation*}
-            P(Y_{n+1}\in C_\alpha(X_{n+1})\Big|X_{n+1}=x)\geq 1-\alpha,\ \forall P_{XY}
+            P\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|X_{n+1}=x \right)\geq 1-\alpha,\ \forall P_{XY}
         \end{equation*}
         The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^n$ and $Y_{n+1}$.
     \end{definition}
+
+
+\section{Standard Split Conformal Prediction}
+    \begin{itemize}
+        \item First divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. And let $n_i=|D_i|$, fit point predictor $\hat{f}_1$ on $D_1$.
+        \item Calculate residuals on $D_2$: $R_i=\Big|Y_i-\hat{f}_1(X_i)\Big|,\ i\in D_2$.
+        \item Find quantile on calibration residuals: $\hat{q}_2=\lceil (1-\alpha)(n_2+1)\rceil$ smallest of $R_i,\ i\in D_2$.
+        \item Construct a conformal set: $C_\alpha(x)=\left[ \hat{f}_1(x)-\hat{q}_2,\hat{f}_1(x)+\hat{q}_2 \right]$.
+    \end{itemize}
+
+
+    Let $R_{n+1}=\Big|Y_{n+1}-\hat{f}_1(X_{n+1})\Big|$. As
+    \begin{equation*}
+        \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq\hat{q}_2 \right\}=\left\{ R_{n+1}\leq\lceil (1-\alpha)(n_2+1)\rceil\text{ smallest of }R_i,\ i\in D_2 \right\},
+    \end{equation*}
+    and $R_i,\ i\in D_2,\ R_{n+1}$ are exchangeable, we have
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D_1 \right)\in[1-\alpha,1-\alpha+1/(n_2+1)].
+    \end{equation*}
+
+
+    Assume a more general score function $V(x,y)=V((x,y);\hat{f}_1)$, define $R_i=V(X_i,Y_i)$ and change the conformal set to
+    \begin{equation*}
+        C_\alpha(x)=\left\{ y:V(x,y)\leq\lceil (1-\alpha)(n_2+1)\rceil\text{ smallest of }R_i,\ i\in D_2 \right\}.
+    \end{equation*}
+
+
+    \begin{remark}
+        Further condition on calibration set, which means conditioning on entire training set $D$ and assume $R=V(x,y)$ has distribution $F$. Let rank statistic $R_{(j)}$ be the $j$-th smallest in $R_i,\ i\in D_2$, and $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$. As
+        \begin{equation*}
+            \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\},
+        \end{equation*}
+        Assume the distribution function of $R_{(j)}$ is $F_{(j)}$, and we have
+        \begin{align}
+            \mathbb{P}\left( \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D \right)\leq t \right)&=\mathbb{P}\left( \mathbb{P}\left( R_{n+1}\leq R_{(k_\alpha)}\Big|D \right)\leq t \right)\notag\\
+            \text{condition on $D$ randomness comes from $R_{n+1}$,}&=\mathbb{P}\left( F(R_{(k_\alpha)})\leq t \right)\notag\\
+            &=\mathbb{P}\left( R_{(k_\alpha)}\leq F^{-1}(t) \right)\notag\\
+            &=F_{(k_\alpha)}(F^{-1}(t))\label{formula1}
+        \end{align}
+        rank statistic has density $F_{(j)}'(x)=jC_{n_2}^jx^{j-1}(1-x)^{n-j}f(x)$, thus take derivative on \ref{formula1}, and $\mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D \right)$ has density
+        \begin{equation*}
+            k_\alpha C_{n_2}^{k_\alpha}t^{k_\alpha-1}(1-t)^{n-k_\alpha}
+        \end{equation*}
+    \end{remark}
+    
 
 
 \section[Section title sans citation]{Federated Conformal Prediction Article1}
