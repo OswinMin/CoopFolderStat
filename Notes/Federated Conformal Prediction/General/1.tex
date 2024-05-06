@@ -182,6 +182,14 @@
     \begin{definition}[empirical miscoverage rate]
         $\alpha(Tr)=P(Y_{n+1}\notin C_\alpha(X_{n+1})\Big|Tr)$
     \end{definition}
+
+
+    In this article, assume $n$ agents each has calibration data $(X_k^i,Y_k^i)\sim P_X^iP_{Y|X},\ k=1,\cdots,n^i,\ i=1,\cdots,n$, and calibration set $D_i=\{(X_k^i,Y_k^i)\}_{k=1}^{n_i},\ i=1,\cdots,n$. Let calibration distribution be $P^{cal}=\overset{n}{\underset{i=1}\sum}\pi_iP_X^iP_{Y|X}$, where $\pi_i=n_i/\left( \overset{n}{\underset{j=1}\sum}n_j \right)$, and the test distribution $P^{test}=P_X^{n+1}P_{Y|X}$. Let the general density ratio be $w(x,y)=\dfrac{dP_X^{n+1}(x)}{\overset{n}{\underset{i=1}\sum}\pi_idP_X^i(x)}$.
+    \begin{itemize}
+        \item Utilize the GMM to compute parameters $\{\pi_y^i,\mu_y^i,\Sigma_y^i\}_{y\in\mathcal{Y}^i}$ on $D_i$. Note that $P_X^i$ is approximated by $|\mathcal{Y}^i|$ centers mixed GMM, $P_X^i=\overset{}{\underset{y\in\mathcal{Y}^i}\sum\pi_y^iN(\phi(x);\mu_y^i,\Sigma_y^i)},\ i=1,\cdots,n+1$, where $\phi()$ be some latent map used while training $\hat{f}$. Further $w(x,y)$ can be calculated.
+        \item Fix any trial data $y$, similar to covariate shift setting, a common idea should be calculate importance weight $p_k^i=w(X_k^i,Y_k^i)/W,\ k=1,\cdots,n^i,\ i=1,\cdots,n$, where $W=\overset{n}{\underset{i=1}\sum}\overset{n^i}{\underset{k=1}\sum}w(X_k^i,Y_k^i)+w(X_{n+1},y)$, and $p_{n+1}=w(X_{n+1},y)/W$. Similarly define residuals $R_k^i,\ R_{n+1}$.
+        \item Conformal set: $C_\alpha(X_{n+1})=\left\{ y: R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}\overset{n^i}{\underset{k=1}\sum}p_k^i\delta_{R_k^i}+p_{n+1}\delta_{\infty})\right\}$.
+    \end{itemize}
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
