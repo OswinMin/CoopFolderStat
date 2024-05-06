@@ -35,8 +35,17 @@
 \setcounter{page}{1}
 \pagenumbering{arabic}
 \section[Section title sans citation]{Conformal Prediction General\cite{angelopoulos2023conformal}}
-    \begin{definition}[Exchangebility]\cite{shafer2008tutorial}
+    \begin{definition}[Exchangeability]\cite{shafer2008tutorial}
         For any r.v. $x_1,\cdots,x_k$, we say they are exchangeable if for any permutation $\sigma:[k]\rightarrow[k]$(bijection), $(x_1,\cdots,x_k)\overset{d.}{=}(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
+    \end{definition}
+
+
+    \begin{definition}[Weighted Exchangeability]\cite{tibshirani2019conformal}
+        For any r.v. $x_1,\cdots,x_k$, we say they are weighted exchangeable if their joint density canbe factorized as
+        \begin{equation*}
+            f(x_1,\cdots,x_k)=\overset{k}{\underset{i=1}{\prod}}w_i(x_i)\cdot g(x_1,\cdots,x_k),
+        \end{equation*}
+        where $g$ is exchangeable, i.e., $g(x_1,\cdots,x_k)=g(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
     \end{definition}
 
 
@@ -123,7 +132,46 @@
     \begin{equation*}
         \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)\in\left[1-\alpha,1-\alpha+\dfrac{1}{n+1}\right).
     \end{equation*}
-    
+
+
+\section{Standard CP under covariate shift}
+    Follow the procedure of split CP and heterogeneity between training and test data\cite{tibshirani2019conformal}. Assume
+    \begin{gather*}
+        Z_i=(X_i,Y_i)\sim P=P_X\times P_(Y|X),i=1,\cdots,n,\\
+        Z_{n+1}=(X_{n+1},Y_{n+1})\sim P'=P_X'\times P_{Y|X}.
+    \end{gather*}
+    \begin{itemize}
+        \item Fix any trial data $y$ to construct training set $\left\{ (X_1,Y_1),\cdots,(X_n,Y_n),(X_{n+1},y) \right\}$. Train point predictor $\hat{f}$ on new training set.
+        \item Calculate nonconformity scores $R_i=V(X_i,Y_i),\ i\in\{1,\cdots,n\},\ R_{n+1}=V(X_{n+1},y)$ based on $\hat{f}$.
+        \item Calculate importance weights $p_i$ based on likelihood ratio $w$:
+        \begin{gather*}
+            w(x)=\dfrac{dP'_X(x)}{dP_X(x)},\\
+            p_i=\dfrac{w(X_i)}{\overset{n+1}{\underset{j=1}\sum}w(X_j)},\ i=1,\cdots,n+1.
+        \end{gather*}
+        \item Calculate $1-\alpha$ quantile of distribution $\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty}$ as $q_\alpha$. Define conformal set $C_\alpha(x)=\left\{ y:R_{n+1}\leq q_\alpha \right\}$.
+    \end{itemize}
+
+
+    All independent variables are weighted exchangeable. Let $E_Z$ be $\{Z_1,\cdots,Z_{n+1}\}=\{z_1,\cdots,z_{n+1}\}$. Assume joint density is $f(z_1,\cdots,z_{n+1})=\overset{n+1}{\underset{i=1}{\prod}}dP(z_i)\cdot w(x_{n+1})$. Condition on $E_Z$, calculate $R_i$ based on $\hat{f}$ and $z_i$, for all permutation $\sigma$
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}=r_i\Big| E_Z \right)=\mathbb{P}\left( Z_{n+1}=z_i\Big| E_Z \right)=\dfrac{\underset{\sigma(n+1)=i}{\sum}f(z_{\sigma(1),\cdots,z_{\sigma(n+1)}})}{\underset{\sigma}{\sum}f(z_{\sigma(1),\cdots,z_{\sigma(n+1)}})}=p_i, 
+    \end{equation*}
+    which leads to $R_{n+1}\Big| E_Z\sim \overset{n+1}{\underset{i=1}\sum}p_i\delta_{r_i}$. Let $Q(1-\alpha,F)$ be the quantile function,
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n+1}{\underset{i=1}\sum}p_i\delta_{r_i})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    means
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}p_i\delta_{r_i}+p_{n+1}\delta_{\infty})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    as condition on $E_Z$, $\overset{n}{\underset{i=1}\sum}p_i\delta_{r_i}+p_{n+1}\delta_{\infty}=\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty}$(left $p$ is based on $z$ and right based on $Z$). The $p_i$ in following formula is different from previous one.
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    thus taking expectation on all $E_Z$,
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)=\mathbb{P}\left( R_{n+1}\leq q_\alpha \right)\geq 1-\alpha
+    \end{equation*}
 
 
 \section{Federated Conformal Prediction Article1}
