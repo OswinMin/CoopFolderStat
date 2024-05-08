@@ -105,7 +105,7 @@
 
     Assume a more general score function $V(x,y)=V((x,y);\hat{f}_1)$, define $R_i=V(X_i,Y_i)$ and change the conformal set to
     \begin{equation*}
-        C_\alpha(x)=\left\{ y:V(x,y)\leq R_{(k_\alpha)} \right\}.
+        C_\alpha(x)=\left\{ y:S(x,y)=V(y,f(x))\leq R_{(k_\alpha)} \right\}.
     \end{equation*}
 
 
@@ -190,7 +190,7 @@
 
     Idea: The marginal coverage is measured over all training data and test points. However, if there is a high variability in the coverage probability as a function of the training data, the test coverage probability may be substantially below $1-\alpha$ for a particular training set.
     \begin{definition}[empirical miscoverage rate]
-        $\alpha(Tr)=P(Y_{n+1}\notin C_\alpha(X_{n+1})\Big|Tr)$
+        $\alpha(Tr)=P(Y_{n+1}\notin C_\alpha(X_{n+1})|Tr)$
     \end{definition}
 
 
@@ -240,7 +240,24 @@
 
 \section{Federated Conformal Prediction Article3}
     One-Shot Federated Conformal Prediction\cite{humbert2023one}
+
+
     Still assume a similar setting, data $(X_k^i,Y_k^i)\sim P^i,\ k=1,\cdots,m,\ i=1,\cdots,n$ be calibration distribution for each $i$-th agent. And scores $R^i=(R_1^i,\cdots,R_m^i)$ for $i$-th agent.
+
+
+    Core idea of this article is: if each agent gives a quantile $\hat{q}_\alpha^i$, further find a quantile of these quantiles to generate the conformal set.
+    \begin{itemize}
+        \item Each agent compute scores $R^i$, given $\alpha$ calculate $k'\ ,l'$
+        \item Each agent returns $k'$-th smallest score to the central server $R_{(k')}^i$
+        \item Central server find $l'$-th smallest of $\{R_{(k')}^i\}_{i=1}^n$ $\hat{q}$. Define conformal set $C_\alpha(X)=\left\{ y:R=S(X,y)\leq\hat{q} \right\}$
+    \end{itemize}
+
+
+    The decision of $k',\ l'$ is easy to understand. 
+    \begin{equation*}
+        \{Y\in C_\alpha(X)\}=\{R\leq R_{(k')}^{(l')}\},
+    \end{equation*}
+    where $R_{(k')}^{(l')}$ is the $l'$-th smallest of $R_{(k')}^i$. Order statistic has explicit distribution, assume $R_k^i\sim G$, then $R_{(k)}^i\sim \overset{m}{\underset{j=k}\sum}C_m^jG^j(1-G)^{m-j}$, and further calculate the quantile of quantile can get the distribution of $\hat{q}$. This implies $k',\ l'$ can be find through simple calculation.
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
