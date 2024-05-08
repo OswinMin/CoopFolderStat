@@ -1,0 +1,105 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Localized Conformal Prediction}}
+\author{Min, Xia}
+\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section[Section title sans citation]{Conformal Prediction General\cite{angelopoulos2023conformal}}
+    \begin{definition}[Exchangeability]\cite{shafer2008tutorial}
+        For any r.v. $x_1,\cdots,x_k$, we say they are exchangeable if for any permutation $\sigma:[k]\rightarrow[k]$(bijection), $(x_1,\cdots,x_k)\overset{d.}{=}(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
+    \end{definition}
+
+
+    \begin{definition}[Weighted Exchangeability]\cite{tibshirani2019conformal}
+        For any r.v. $x_1,\cdots,x_k$, we say they are weighted exchangeable if their joint density canbe factorized as
+        \begin{equation*}
+            f(x_1,\cdots,x_k)=\overset{k}{\underset{i=1}{\prod}}w_i(x_i)\cdot g(x_1,\cdots,x_k),
+        \end{equation*}
+        where $g$ is exchangeable, i.e., $g(x_1,\cdots,x_k)=g(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
+    \end{definition}
+
+
+    For conformal prediction two classes of targets are studied.
+    \begin{definition}[Marginal Coverage]
+        $(X,Y)\in\mathbb{R}^p\times\mathbb{R}\sim P_{XY}$ which is unknown. Given training set $Tr=\{(X_i,Y_i)\}_{i=1}^n$, and test on $(X_{n+1},Y_{n+1})$, both i.i.d.
+
+
+        $C_\alpha$  satisfies distribution-free marginal coverage at level $1-\alpha$ if
+        \begin{equation*}
+            P(Y_{n+1}\in C_\alpha(X_{n+1}))\geq 1-\alpha,\ \forall P_{XY}
+        \end{equation*}
+        The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^{n+1}$.
+    \end{definition}
+
+
+    \begin{definition}[Conditional Coverage]
+        $(X,Y)\in\mathbb{R}^p\times\mathbb{R}\sim P_{XY}$ which is unknown. Given training set $Tr=\{(X_i,Y_i)\}_{i=1}^n$, and test on $(X_{n+1},Y_{n+1})$, both i.i.d.
+
+
+        $C_\alpha$  satisfies distribution-free marginal coverage at level $1-\alpha$ if
+        \begin{equation*}
+            P\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|X_{n+1}=x \right)\geq 1-\alpha,\ \forall P_{XY}
+        \end{equation*}
+        The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^n$ and $Y_{n+1}$.
+    \end{definition}
+
+
+    \begin{definition}[Conformal Score Function]
+        For data pair $(X,Y)$ and point predictor and any loss function $V(\cdot,\cdot)$, call $R=S(X,Y)=V(Y,\hat{f}(X))$ be the conformal score(or residual).
+    \end{definition}
+
+
+    \begin{definition}[Efficiency]
+        $X$ is some r.v. following the testing distribution and $C_\alpha$ is efficient if $\mathbb{E}\left[ |C_\alpha(X)| \right]$ is small. Define $Size(C_\alpha)=\dfrac{1}{n}\overset{n}{\underset{i=1}\sum}|C_\alpha(X_i)|$.
+    \end{definition}
+
+
+\section{Localized CP Article1}
+    Conformalized Quantile Regression
+    \cite{romano2019conformalized}
+
+
+    The core idea is if conditional distribution function $F(y|X=x)$ is known and conditional quantile is $q_\alpha(x)=\inf\{y:F(y|X=x)\geq\alpha\}$, for $\alpha_1=\alpha/2,\ \alpha_2=1-\alpha/2$ we can define conformal set to be $C_\alpha(x)=\left[ q_{\alpha_1}(x),q_{\alpha_2}(x) \right]$. Next is to estimate quantiles from data.
+
+
+    Follow the split CP setting, 
+    \begin{itemize}
+        \item First divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. And let $n_i=|D_i|$, fit point predictor $\hat{q}_{\alpha_1},\ \hat{q}_{\alpha_2}$ on $D_1$.
+        \item Calculate cnformity scores on calibration set: $R_i=\max\{\hat{q}_{\alpha_1}(X_i)-Y_i,Y_i-\hat{q}_{\alpha_2}(X_i)\}$ for $i\in D_2$, and $R=\max\{\hat{q}_{\alpha_1}(X)-Y_i,Y_i-\hat{q}_{\alpha_2}(X)\}$
+        \item Find the $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile of $R_i,\ i\in D_2$ as $\hat{q}$ and construct conformal set $C_\alpha(x)=\left[ \hat{q}_{\alpha_1}(x)-\hat{q},\hat{q}_{\alpha_2}(x)+\hat{q} \right]$
+    \end{itemize}
+    Note that $\left\{ Y\in C_\alpha(X) \right\}=\left\{ R\leq\hat{q} \right\}$. With exchangeability of $R_i,\ i\in D_2$ and $R$ the coverage is assured.
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
