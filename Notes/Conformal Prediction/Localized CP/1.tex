@@ -95,10 +95,28 @@
     Follow the split CP setting, 
     \begin{itemize}
         \item First divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. And let $n_i=|D_i|$, fit point predictor $\hat{q}_{\alpha_1},\ \hat{q}_{\alpha_2}$ on $D_1$.
-        \item Calculate cnformity scores on calibration set: $R_i=\max\{\hat{q}_{\alpha_1}(X_i)-Y_i,Y_i-\hat{q}_{\alpha_2}(X_i)\}$ for $i\in D_2$, and $R=\max\{\hat{q}_{\alpha_1}(X)-Y_i,Y_i-\hat{q}_{\alpha_2}(X)\}$
+        \item Calculate cnformity scores on calibration set: $R_i=\max\{\hat{q}_{\alpha_1}(X_i)-Y_i,Y_i-\hat{q}_{\alpha_2}(X_i)\}$ for $i\in D_2$, and $R=\max\{\hat{q}_{\alpha_1}(X_i)-Y_i,Y_i-\hat{q}_{\alpha_2}(X_i)\}$
         \item Find the $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile of $R_i,\ i\in D_2$ as $\hat{q}$ and construct conformal set $C_\alpha(x)=\left[ \hat{q}_{\alpha_1}(x)-\hat{q},\hat{q}_{\alpha_2}(x)+\hat{q} \right]$
     \end{itemize}
     Note that $\left\{ Y\in C_\alpha(X) \right\}=\left\{ R\leq\hat{q} \right\}$. With exchangeability of $R_i,\ i\in D_2$ and $R$ the coverage is assured.
+
+
+    \begin{remark}
+        Can also define $R_1=\hat{q}_{\alpha_1}(X_i)-Y_i,\ R_2=Y_i-\hat{q}_{\alpha_2}(X_i)$ and their $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile $\hat{q}_1,\ \hat{q}_2$. Define conformal set $C_\alpha(X)=\left[ \hat{q}_{\alpha_1}(X)-\hat{q}_1,\hat{q}_{\alpha_2}(X)+\hat{q}_2 \right]$.
+    \end{remark}
+
+
+\section{Localized CP Article2}
+    Distribution-Free Predictive Inference For Regression\cite{lei2018distribution}
+
+
+    The setting is similar here. Consider the split setting, divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set.
+    \begin{itemize}
+        \item Train $\hat{f}(x)$ on $D_1$ as a point predictor and based on $(X_i,|Y_i-\hat{f}(X_i)|),\ i\in D_1$, train $\hat{\rho}$ as an estimator of conditional MAD $|Y-f(X)|\Big|X=x$. For a given test point $X$ fix trial data $y$.
+        \item Calculate scores on calibration set $R_i=\dfrac{|Y_i-\hat{f}(X_i)|}{\hat{\rho}(X_i)},\ i\in D_2,\ R=\dfrac{|y-\hat{f}(X)|}{\hat{\rho}(X)}$ and find the $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile $\hat{q}_\alpha$.
+        \item Define conformal set $C_\alpha(X)=\{y:R\leq\hat{q}_\alpha\}$.
+    \end{itemize}
+    Note that $\left\{ Y\in C_\alpha \right\}=\left\{ R\leq\hat{q}_\alpha \right\}$ and $R,\ R_i,\ i\in D_2$ are exchangeable, it's easy to prove the coverage.
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
