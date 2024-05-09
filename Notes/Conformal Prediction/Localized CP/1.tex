@@ -117,6 +117,29 @@
         \item Define conformal set $C_\alpha(X)=\{y:R\leq\hat{q}_\alpha\}$.
     \end{itemize}
     Note that $\left\{ Y\in C_\alpha \right\}=\left\{ R\leq\hat{q}_\alpha \right\}$ and $R,\ R_i,\ i\in D_2$ are exchangeable, it's easy to prove the coverage.
+
+
+\section{Localized CP Article3}
+    Split Localized Conformal Prediction\cite{han2022split}
+
+
+    If score is defined by $R=|Y-\hat{f}(X)|$, the split CP follows setting $Y=\hat{f}(X)+\varepsilon$ where $\varepsilon$ is independent of $X$. However this is not always true, we need to estimate the distribution of $R|X=x$.
+
+
+    Follow split CP setting, divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. 
+    
+    
+    We can estimate the distribution of $R|X=x$ with kernel smoothing. Assume distribution $F(R=r|X=x)=\mathbb{E}\mathbbm{1}(R\leq r|X=x)$, and NW estimator is
+    \begin{equation*}
+        \hat{F}_h(R=r|X=x)=\overset{}{\underset{i\in D_1}\sum}w_h(X_i|x)\mathbbm{1}\{R_i\leq r\},
+    \end{equation*}
+    where $w_h(X_i|x)=\dfrac{K(||g(X_i)-g(x)||/h)}{\overset{}{\underset{j\in D_1}\sum}K(||g(X_j)-g(x)||/h)}$ with some embedding function $g$. But directly find the $\alpha$ quantile of $\hat{F}_h(R=r|X=x)$ as $\hat{q}_\alpha$ and construct conformal set as $\left\{ y:R\leq \hat{q}_\alpha \right\}$ cannot guarantee coverage. Further, calculate a residual score on calibration set $R_i'=R_i-Q(\alpha,\hat{F}_h(R|X=X_i)),\ i\in D_2,\ R'=R-Q(\alpha,\hat{F}_h(R|X=X))$. The exchangeability still holds on $R_i'$. The conformal set is $C_\alpha=\left\{ y:R\leq\hat{q}_\alpha' \right\}$, where $\hat{q}_\alpha'$ is $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile of $R_i',\ i\in D_2$. Entire procedure is
+    \begin{itemize}
+        \item Train point predictor $\hat{f}$ on $D_1$ and calculate score $R_i=|Y_i-\hat{f}(X_i)|,\ i\in D_1$. Choose $h$ to get NW estimator.
+        \item Calculate on calibration set $R_i,\ Q(\alpha,\hat{F}_h(R|X=X_i)),\ i\in D_2$ and given $X$, for any trial data $y$, calculate $R$ and $Q(\alpha,\hat{F}_h(R|X))$
+        \item Calculate residual score on calibration set $R_i'=R_i-Q(\alpha,\hat{F}_h(R|X=X_i)),\ i\in D_2$ and $R'=R-Q(\alpha,\hat{F}_h(R|X))$. Find $\lceil(1-\alpha)(n_2+1)\rceil$-th empirical quantile of $R_i',\ i\in D_2$
+        \item Define conformal set $C_\alpha(X)=\left\{ y:R\leq\hat{q}_\alpha' \right\}$
+    \end{itemize}
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
