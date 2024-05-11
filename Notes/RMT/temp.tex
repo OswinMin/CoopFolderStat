@@ -92,6 +92,16 @@
     \begin{equation*}
         \beta_2=\dfrac{\overset{}{\underset{(u,v)\in\Theta}\sum}X^{VT}S_{uv}X^V}{\overset{}{\underset{(u,v)}\sum}X^{VT}S_{uv}X^V}\overset{def.}{=}\dfrac{X^{VT}S_{\Theta}X^V}{X^{VT}S_0X^V}.
     \end{equation*}
+
+
+\section{A Conprehensive Proof}
+    Now use low rank estimation and Fourier screening estimation to approximate a matrix $X\in\mathbb{R}^{n\times n}$, define $p$ such that $H_1\in\mathbb{R}^{n\times p},\ H_2\in\mathbb{R}^{p\times n}$ makes low rank estimation $H_1H_2$. Assume a possible Fourier matrix $F$ with specified nonzero variables $f_1,\cdots,f_N,\ N=2pn$, where $f_i$ can be either real or imagine part of any location. Let all possible variables of $F$ be $f=F^V$ and $f_0=(f_1,\cdots,f_N)^T$ be a subvector of $f$.
+
+
+    Given $n$, the reverse Fourier transformation can be written as $X^V=Af$, where $A\in\mathbb{R}^{n^2}$ is constant inversible matrix.
+
+
+    Given $p$, $H_1H_2$ is of rank at most $p$
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
