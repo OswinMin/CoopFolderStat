@@ -1,0 +1,108 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{RMT}}
+% \author{Min}
+\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section{On the eigenvalues distribution}
+    Assume gaussian random matrix $X\sim\mathcal{X}_{n\times n}(0,\Sigma),\ X\in\mathbb{R}^{n\times n}$, which means $X^V\sim\mathcal{X}_{n^2}(0,I_n\otimes\Sigma)$. Define the columns of $X$ to be $X_1,\cdots,X_n,\ X_n\in\mathbb{R}^n$ and $X^V=(X_1^T,\cdots,X_n^T)^T\in\mathbb{R}^{n^2}$. And $\cdot\otimes\cdot$ means Kronecker product.
+
+
+    Assume the singular decompose of $X$ is $X=A\Lambda B'$, where $\Lambda=diag(\lambda_1,\cdots,\lambda_n)$ and $A,\ B$ are orthogonal matrix $A^TA=B^TB=I_n$. Thus $A^TX=\Lambda B^T$ and $A^TXX^TA=\Lambda B^TB\Lambda=\Lambda^2$.
+
+
+    For calculation simplicity, assume $\Sigma=I_n$, which we will justify later.
+
+
+    As $\Lambda^2=diag(\lambda_1^2,\cdots,\lambda_n^2)=A^TXX^TA$, $\Lambda^2$ is the eigenvalue of $XX^T$. As $X\sim\mathcal{X}_{n\times n}(0,I_n)$, $XX^T\sim W(n,I_n)$ where $W$ means Wishart distribution. To find the distribution of $\Lambda^2$, first state Weyl's Integration Formula\cite{brocker2013representations}.
+    \begin{theorem}[Weyl's Integration Formula]
+        If $X\in\mathbb{R}^{n\times n}$ is a real symmetric random matrix with density $g(\lambda_1',\cdots,\lambda_n')$ and $g$ is exchangeable, the joint density of $(\lambda_1',\cdots,\lambda_n')$ is $Cg(\lambda_1',\cdots,\lambda_n')\overset{}{\underset{i<j}{\prod}}|\lambda_i'-\lambda_j'|$.
+    \end{theorem}
+    A direct corollary is
+    \begin{corollary}
+        The joint density of $\Lambda^2=(\lambda_1^2,\cdots,\lambda_n^2)$ is
+        \begin{equation*}
+            f_1(\Lambda^2)=\left[ 2^{n^2/2}\pi^{n(n-1)/2}\overset{n}{\underset{i=1}{\prod}}\Gamma((n+1-i)/2) \right]^{-1}\left[ \overset{n}{\underset{i=1}{\prod}}\lambda_i^{-1/2}e^{-\lambda_i/2} \right]\left[ \overset{}{\underset{i<j}{\prod}}|\lambda_i-\lambda_j| \right].
+        \end{equation*} 
+    \end{corollary}
+
+
+    As $f_1(\Lambda^2)$ is an exchangeable function, the order statistics $\Lambda_{ord}^2=(\lambda_{(1)}^2,\cdots,\lambda_{(n)}^2)$ with $\lambda_{(1)}^2\geq\cdots\geq\lambda_{(n)}^2$ has density
+    \begin{equation*}
+        f_1^{ord}(\Lambda_{ord}^2)=n!f_1(\Lambda_{ord}^2),\ \lambda_{(1)}^2\geq\cdots\geq\lambda_{(n)}^2.
+    \end{equation*}
+
+
+    Given the low rank $p$ and the error is of magnitude
+    \begin{equation*}
+        \beta_1=\dfrac{\overset{p}{\underset{i=1}\sum}\lambda_{(i)^2}}{\overset{n}{\underset{i=1}\sum}\lambda_{(i)^2}}.
+    \end{equation*}
+
+
+\section{On the Fourier Concentration}
+    Assume gaussian random matrix $X\sim\mathcal{X}_{n\times n}(0,\Sigma)$ and the Fourier transformation $F$ given $X$, both $X,\ F\in\mathbb{R}^{n\times n}$. Let $\Theta=\left\{ (u_i,v_i):i\leq 2np \right\}$ be the index set we choose to learn parameters on $F$. The Fourier transformation is
+    \begin{equation*}
+        F_{u,v}=\overset{n-1}{\underset{i=0}\sum}\overset{n-1}{\underset{j=0}\sum}X_{i,j}\exp\left\{ -j'2\pi(iu+jv)/n \right\},
+    \end{equation*}
+    further decompose
+    \begin{align*}
+        \exp\left\{ -j'2\pi(iu+jv)/n \right\}=\cos\left( 2\pi(iu+jv)/n \right)-j'\sin\left( 2\pi(iu+jv)/n \right)=r_{ijuv}+j'im_{ijuv},
+    \end{align*}
+    where $j'$ is $\sqrt{-1}$ and $r_{ijuv},\ im_{ijuv}$ be real and imagine part respectively. Rearrange $r_{ijuv}$ and $im_{ijuv}$ to $R_{uv},\ Im_{uv}$ such that
+    \begin{equation*}
+        F_{u,v}=X^{VT}R_{uv}+j'X^{VT}Im_{uv},
+    \end{equation*}
+    and we have
+    \begin{equation*}
+        |F_{u,v}|^2=X^{VT}\left[ R_{uv}R_{uv}^T+Im_{uv}Im_{uv}^T \right]X^V.
+    \end{equation*}
+
+
+    Let $S_{uv}=R_{uv}R_{uv}^T+Im_{uv}Im_{uv}^T$ and the error of Fourier transformation is of magnitude
+    \begin{equation*}
+        \beta_2=\dfrac{\overset{}{\underset{(u,v)\in\Theta}\sum}X^{VT}S_{uv}X^V}{\overset{}{\underset{(u,v)}\sum}X^{VT}S_{uv}X^V}\overset{def.}{=}\dfrac{X^{VT}S_{\Theta}X^V}{X^{VT}S_0X^V}.
+    \end{equation*}
+
+
+\section{A Conprehensive Proof}
+    Now use low rank estimation and Fourier screening estimation to approximate a matrix $X\in\mathbb{R}^{n\times n}$, define $p$ such that $H_1\in\mathbb{R}^{n\times p},\ H_2\in\mathbb{R}^{p\times n}$ makes low rank estimation $H_1H_2$. Assume a possible Fourier matrix $F$ with specified nonzero variables $f_1,\cdots,f_N,\ N=2pn$, where $f_i$ can be either real or imagine part of any location. Let all possible variables of $F$ be $f=F^V$ and $f_0=(f_1,\cdots,f_N)^T$ be a subvector of $f$.
+
+
+    Given $n$, the reverse Fourier transformation can be written as $X^V=Af$, where $A\in\mathbb{R}^{n^2}$ is constant inversible matrix.
+
+
+    Given $p$, $H_1H_2$ is of rank at most $p$
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}

@@ -1,0 +1,264 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Federated Conformal Prediction General}}
+\author{Min, Xia}
+\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section[Section title sans citation]{Conformal Prediction General\cite{angelopoulos2023conformal}}
+    \begin{definition}[Exchangeability]\cite{shafer2008tutorial}
+        For any r.v. $x_1,\cdots,x_k$, we say they are exchangeable if for any permutation $\sigma:[k]\rightarrow[k]$(bijection), $(x_1,\cdots,x_k)\overset{d.}{=}(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
+    \end{definition}
+
+
+    \begin{definition}[Weighted Exchangeability]\cite{tibshirani2019conformal}
+        For any r.v. $x_1,\cdots,x_k$, we say they are weighted exchangeable if their joint density canbe factorized as
+        \begin{equation*}
+            f(x_1,\cdots,x_k)=\overset{k}{\underset{i=1}{\prod}}w_i(x_i)\cdot g(x_1,\cdots,x_k),
+        \end{equation*}
+        where $g$ is exchangeable, i.e., $g(x_1,\cdots,x_k)=g(x_{\sigma(1)},\cdots,x_{\sigma(k)})$.
+    \end{definition}
+
+
+    For conformal prediction two classes of targets are studied.
+    \begin{definition}[Marginal Coverage]
+        $(X,Y)\in\mathbb{R}^p\times\mathbb{R}\sim P_{XY}$ which is unknown. Given training set $Tr=\{(X_i,Y_i)\}_{i=1}^n$, and test on $(X_{n+1},Y_{n+1})$, both i.i.d.
+
+
+        $C_\alpha$  satisfies distribution-free marginal coverage at level $1-\alpha$ if
+        \begin{equation*}
+            P(Y_{n+1}\in C_\alpha(X_{n+1}))\geq 1-\alpha,\ \forall P_{XY}
+        \end{equation*}
+        The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^{n+1}$.
+    \end{definition}
+
+
+    \begin{definition}[Conditional Coverage]
+        $(X,Y)\in\mathbb{R}^p\times\mathbb{R}\sim P_{XY}$ which is unknown. Given training set $Tr=\{(X_i,Y_i)\}_{i=1}^n$, and test on $(X_{n+1},Y_{n+1})$, both i.i.d.
+
+
+        $C_\alpha$  satisfies distribution-free marginal coverage at level $1-\alpha$ if
+        \begin{equation*}
+            P\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|X_{n+1}=x \right)\geq 1-\alpha,\ \forall P_{XY}
+        \end{equation*}
+        The probability is with respect to $\{(X_i,Y_i)\}_{i=1}^n$ and $Y_{n+1}$.
+    \end{definition}
+
+
+    \begin{definition}[Conformal Score Function]
+        For data pair $(X,Y)$ and point predictor and any loss function $V(\cdot,\cdot)$, call $R=S(X,Y)=V(Y,\hat{f}(X))$ be the conformal score(or residual).
+    \end{definition}
+
+
+    \begin{definition}[Efficiency]
+        $X$ is some r.v. following the testing distribution and $C_\alpha$ is efficient if $\mathbb{E}\left[ |C_\alpha(X)| \right]$ is small. Define $Size(C_\alpha)=\dfrac{1}{n}\overset{n}{\underset{i=1}\sum}|C_\alpha(X_i)|$.
+    \end{definition}
+
+
+\section{Standard Split Conformal Prediction}
+    \begin{itemize}
+        \item First divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. And let $n_i=|D_i|$, fit point predictor $\hat{f}_1$ on $D_1$.
+        \item Calculate residuals on $D_2$: $R_i=\Big|Y_i-\hat{f}_1(X_i)\Big|,\ i\in D_2$.
+        \item Find quantile on calibration residuals: $\hat{q}_2=\lceil (1-\alpha)(n_2+1)\rceil$ smallest of $R_i,\ i\in D_2$.
+        \item Construct a conformal set: $C_\alpha(x)=\left[ \hat{f}_1(x)-\hat{q}_2,\hat{f}_1(x)+\hat{q}_2 \right]$.
+    \end{itemize}
+
+
+    Let $R_{n+1}=\Big|Y_{n+1}-\hat{f}_1(X_{n+1})\Big|$. Let rank statistic $R_{(j)}$ be the $j$-th smallest in $R_i,\ i\in D_2$, and $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$. As
+    \begin{equation*}
+        \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq\hat{q}_2 \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\},
+    \end{equation*}
+    and $R_i,\ i\in D_2,\ R_{n+1}$ are exchangeable, we have
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D_1 \right)\in\left[ 1-\alpha,1-\alpha+\dfrac{1}{n_2+1} \right).
+    \end{equation*}
+
+
+    Assume a more general score function $V(x,y)=V((x,y);\hat{f}_1)$, define $R_i=V(X_i,Y_i)$ and change the conformal set to
+    \begin{equation*}
+        C_\alpha(x)=\left\{ y:S(x,y)=V(y,f(x))\leq R_{(k_\alpha)} \right\}.
+    \end{equation*}
+
+
+    \begin{remark}
+        Further condition on calibration set, which means conditioning on entire training set $D$ and assume $R=V(x,y)$ has distribution $F$. As
+        \begin{equation*}
+            \left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\},
+        \end{equation*}
+        Assume the distribution function of $R_{(j)}$ is $F_{(j)}$, and we have
+        \begin{align}
+            \mathbb{P}\left( \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D \right)\leq t \right)&=\mathbb{P}\left( \mathbb{P}\left( R_{n+1}\leq R_{(k_\alpha)}\Big|D \right)\leq t \right)\notag\\
+            \text{condition on $D$ randomness comes from $R_{n+1}$,}&=\mathbb{P}\left( F(R_{(k_\alpha)})\leq t \right)\notag\\
+            &=\mathbb{P}\left( R_{(k_\alpha)}\leq F^{-1}(t) \right)\notag\\
+            &=F_{(k_\alpha)}(F^{-1}(t))\label{formula1}
+        \end{align}
+        rank statistic has density $F_{(j)}'(x)=jC_{n_2}^jx^{j-1}(1-x)^{n-j}f(x)$, thus take derivative on formula (\ref{formula1}), and $\mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|D \right)$ has density
+        \begin{equation*}
+            k_\alpha C_{n_2}^{k_\alpha}t^{k_\alpha-1}(1-t)^{n-k_\alpha}.
+        \end{equation*}
+    \end{remark}
+
+
+\section{Standard Full Conformal Prediction}
+    Full CP has similar steps as split CP. It uses all data points for training.
+    \begin{itemize}
+        \item Fix any $x$ and trial data $y$ to construct training set $\left\{ (X_1,Y_1),\cdots,(X_n,Y_n),(x,y) \right\}$.
+        \item Train point predictor $\hat{f}$ on training set and define residuals $R_i=\Big|Y_i-\hat{f}(X_i)\Big|,\ i\in[n],\ R_{n+1}=\Big|y-\hat{f}(x)\Big|$.
+        \item Define $j$-th rank statistic of $R_i,\ i\in[n]$ as $R_{(j)}$, $k_\alpha=\lceil (1-\alpha)(n_2+1)\rceil$, and conformal set
+        \begin{equation*}
+            C_\alpha(x)=\left\{ y:R_{n+1}\leq R_{(k_\alpha)} \right\}.
+        \end{equation*}
+    \end{itemize}
+    As $\left\{ Y_{n+1}\in C_\alpha(X_{n+1}) \right\}=\left\{ R_{n+1}\leq R_{(k_\alpha)} \right\}$, and the exchangebility of data
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)\in\left[1-\alpha,1-\alpha+\dfrac{1}{n+1}\right).
+    \end{equation*}
+
+
+\section{Standard CP under covariate shift}
+    Follow the procedure of split CP and heterogeneity between training and test data\cite{tibshirani2019conformal}. Assume
+    \begin{gather*}
+        Z_i=(X_i,Y_i)\sim P=P_X\times P_{Y|X},i=1,\cdots,n,\\
+        Z_{n+1}=(X_{n+1},Y_{n+1})\sim P'=P_X'\times P_{Y|X}.
+    \end{gather*}
+    \begin{itemize}
+        \item Fix any trial data $y$ to construct training set $\left\{ (X_1,Y_1),\cdots,(X_n,Y_n),(X_{n+1},y) \right\}$. Train point predictor $\hat{f}$ on new training set.
+        \item Calculate nonconformity scores $R_i=V(X_i,Y_i),\ i\in\{1,\cdots,n\},\ R_{n+1}=V(X_{n+1},y)$ based on $\hat{f}$.
+        \item Calculate importance weights $p_i$ based on likelihood ratio $w$:
+        \begin{gather*}
+            w(x)=\dfrac{dP'_X(x)}{dP_X(x)},\\
+            p_i=\dfrac{w(X_i)}{\overset{n+1}{\underset{j=1}\sum}w(X_j)},\ i=1,\cdots,n+1.
+        \end{gather*}
+        \item Calculate $1-\alpha$ quantile of distribution $\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty}$ as $q_\alpha$. Define conformal set $C_\alpha(x)=\left\{ y:R_{n+1}\leq q_\alpha \right\}$.
+    \end{itemize}
+
+
+    All independent variables are weighted exchangeable. Let $E_Z$ be $\{Z_1,\cdots,Z_{n+1}\}=\{z_1,\cdots,z_{n+1}\}$. Assume joint density is $f(z_1,\cdots,z_{n+1})=\overset{n+1}{\underset{i=1}{\prod}}dP(z_i)\cdot w(x_{n+1})$. Condition on $E_Z$, calculate $R_i$ based on $\hat{f}$ and $z_i$, for all permutation $\sigma$
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}=r_i\Big| E_Z \right)=\mathbb{P}\left( Z_{n+1}=z_i\Big| E_Z \right)=\dfrac{\underset{\sigma(n+1)=i}{\sum}f(z_{\sigma(1),\cdots,z_{\sigma(n+1)}})}{\underset{\sigma}{\sum}f(z_{\sigma(1),\cdots,z_{\sigma(n+1)}})}=p_i, 
+    \end{equation*}
+    which leads to $R_{n+1}\Big| E_Z\sim \overset{n+1}{\underset{i=1}\sum}p_i\delta_{r_i}$. Let $Q(1-\alpha,F)$ be the quantile function,
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n+1}{\underset{i=1}\sum}p_i\delta_{r_i})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    means
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}p_i\delta_{r_i}+p_{n+1}\delta_{\infty})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    as condition on $E_Z$, $\overset{n}{\underset{i=1}\sum}p_i\delta_{r_i}+p_{n+1}\delta_{\infty}=\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty}$(left $p$ is based on $z$ and right based on $Z$). The $p_i$ in following formula is different from previous one.
+    \begin{equation*}
+        \mathbb{P}\left( R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}p_i\delta_{R_i}+p_{n+1}\delta_{\infty})\Big| E_Z \right)\geq 1-\alpha,
+    \end{equation*}
+    thus taking expectation on all $E_Z$,
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)=\mathbb{P}\left( R_{n+1}\leq q_\alpha \right)\geq 1-\alpha
+    \end{equation*}
+
+
+\section{Federated Conformal Prediction Article1}
+    Efficient Conformal Prediction under Data Heterogeneity\cite{plassier2024efficient}
+
+
+    Idea: The marginal coverage is measured over all training data and test points. However, if there is a high variability in the coverage probability as a function of the training data, the test coverage probability may be substantially below $1-\alpha$ for a particular training set.
+    \begin{definition}[empirical miscoverage rate]
+        $\alpha(Tr)=P(Y_{n+1}\notin C_\alpha(X_{n+1})|Tr)$
+    \end{definition}
+
+
+    In this article, assume $n$ agents each has calibration data $(X_k^i,Y_k^i)\sim P_X^iP_{Y|X},\ k=1,\cdots,n^i,\ i=1,\cdots,n$, and calibration set $D_i=\{(X_k^i,Y_k^i)\}_{k=1}^{n_i},\ i=1,\cdots,n$. Let calibration distribution be $P^{cal}=\overset{n}{\underset{i=1}\sum}\pi_iP_X^iP_{Y|X}$, where $\pi_i=n_i/\left( \overset{n}{\underset{j=1}\sum}n_j \right)$, and the test distribution $P^{test}=P_X^{n+1}P_{Y|X}$. Let the general density ratio be $w(x,y)=\dfrac{dP_X^{n+1}(x)}{\overset{n}{\underset{i=1}\sum}\pi_idP_X^i(x)}$.
+    \begin{itemize}
+        \item Utilize the GMM to compute parameters $\{\pi_y^i,\mu_y^i,\Sigma_y^i\}_{y\in\mathcal{Y}^i}$ on $D_i$. Note that $P_X^i$ is approximated by $|\mathcal{Y}^i|$ centers mixed GMM, $P_X^i=\overset{}{\underset{y\in\mathcal{Y}^i}\sum\pi_y^iN(\phi(x);\mu_y^i,\Sigma_y^i)},\ i=1,\cdots,n+1$, where $\phi()$ be some latent map used while training $\hat{f}$. Further $w(x,y)$ can be calculated.
+        \item Fix any trial data $y$, similar to covariate shift setting, a common idea should be calculate importance weight $p_k^i=w(X_k^i,Y_k^i)/W,\ k=1,\cdots,n^i,\ i=1,\cdots,n$, where $W=\overset{n}{\underset{i=1}\sum}\overset{n^i}{\underset{k=1}\sum}w(X_k^i,Y_k^i)+w(X_{n+1},y)$, and $p_{n+1}=w(X_{n+1},y)/W$. Similarly define residuals $R_k^i,\ R_{n+1}$.
+        \item Conformal set: $C_\alpha(X_{n+1})=\left\{ y: R_{n+1}\leq Q(1-\alpha,\overset{n}{\underset{i=1}\sum}\overset{n^i}{\underset{k=1}\sum}p_k^i\delta_{R_k^i}+p_{n+1}\delta_{\infty})\right\}$.
+    \end{itemize}
+
+
+\section{Federated Conformal Prediction Article2}
+    Federated Conformal Predictors for Distributed Uncertainty Quantification\cite{lu2023federated}
+
+
+    The federated learning setting is similar to article1, but specific with classification setting. Data $(X_k^i,Y_k^i)\sim P^i,\ k=1,\cdots,n_i,\ i=1,\cdots,n$ be calibration distribution for each $i$-th agent. The test distribution is $P^{test}=\overset{n}{\underset{i=1}\sum}\lambda_iP^i$. And $X\in\mathcal{X},\ Y\in\mathcal{Y}$, where $\mathcal{Y}$ has finite items.
+
+
+    \begin{definition}[FL Exchangeability]
+        Follow previous setting and $(X,Y)\sim P^{test}$. The scores on $i$-th agent $S(X_1^i,Y_1^i),\cdots,S(X_{n_i}^i,Y_{n_i}^i),S(X,Y)$ are exchangeable with probability $\lambda_i$. 
+    \end{definition}
+    \begin{remark}
+        FL exchangebility means the test distribution is the mixture of all agent distribution and with probability $\lambda_i$, $(X,Y)$ has distribution $P^i$.
+    \end{remark}
+
+
+    \begin{itemize}
+        \item Write $N=\overset{n}{\underset{i=1}\sum}n_i$, $\lambda_i=(n_i+1)/(N+n)$.
+        \item Fix trial data $y$ for new test $X$. Calculate scores on each agent with given global classifier $f$, $\left\{ R_k^i=S(X_k^i,Y_k^i) \right\}_{i\in[n],k\in[n_i]}$ and $R=S(X,y)$.
+        \item Define conformal set $C_\alpha(X)=\left\{ y:R\leq \hat{q}_\alpha \right\}$, where $\hat{q}_\alpha$ is the $\lceil(1-\alpha)(N+n)\rceil$ smallest of agent scores.
+    \end{itemize}
+
+
+    Let $n_i(q)=|\{k\leq n_i:R_k^i\leq q\}|$ and $\overset{n}{\underset{i=1}\sum}n_i(\hat{q}_\alpha)=\lceil(1-\alpha)(N+n)\rceil$. Define event
+    \begin{equation*}
+        E=\left\{ \forall i\in[n],\ \{R_k^i\}_{k=1}^{n_i}=\{r_k^i\}_{k=1}^{n_i} \right\}.
+    \end{equation*}
+    Then first follow FL exchangebility the whole space can be divided into $n$ disjoint subspace $\Omega_i=\{R_1^i,\cdots,R_{n_i}^i,R\text{ are exchangeable}\}$. And $(X,Y)$ belongs to which $P^i$ is independent of all other things.
+    \begin{align*}
+        P(R\leq\hat{q}_\alpha\Big|E)=\overset{n}{\underset{i=1}\sum}\lambda_iP(R\leq\hat{q}_\alpha\Big|E,\Omega_i).
+    \end{align*}
+    Similar to results in split CP, $P(R\leq\hat{q}_\alpha\Big|E,\Omega_i)\geq n_i(\hat{q}_\alpha)/(n_i+1)$ as $n_i(\hat{q}_\alpha)$ scores are smaller than $\hat{q}_\alpha$ in $R_1^i,\cdots,R_{n_i}^i$ which are exchangeable with $R$. Thus,
+    \begin{equation*}
+        P(R\leq\hat{q}_\alpha\Big|E)\geq \overset{n}{\underset{i=1}\sum}\lambda_i\dfrac{n_i(\hat{q}_\alpha)}{n_i+1}=\dfrac{\overset{n}{\underset{i=1}\sum}n_i(\hat{q}_\alpha)}{N+n}=\dfrac{\lceil(1-\alpha)(N+n)\rceil}{N+n}\geq 1-\alpha.
+    \end{equation*}
+    
+
+\section{Federated Conformal Prediction Article3}
+    One-Shot Federated Conformal Prediction\cite{humbert2023one}
+
+
+    Still assume a similar setting, data $(X_k^i,Y_k^i)\sim P^i,\ k=1,\cdots,m,\ i=1,\cdots,n$ be calibration distribution for each $i$-th agent. And scores $R^i=(R_1^i,\cdots,R_m^i)$ for $i$-th agent.
+
+
+    Core idea of this article is: if each agent gives a quantile $\hat{q}_\alpha^i$, further find a quantile of these quantiles to generate the conformal set.
+    \begin{itemize}
+        \item Each agent compute scores $R^i$, given $\alpha$ calculate $k'\ ,l'$
+        \item Each agent returns $k'$-th smallest score to the central server $R_{(k')}^i$
+        \item Central server find $l'$-th smallest of $\{R_{(k')}^i\}_{i=1}^n$ $\hat{q}$. Define conformal set $C_\alpha(X)=\left\{ y:R=S(X,y)\leq\hat{q} \right\}$
+    \end{itemize}
+
+
+    The decision of $k',\ l'$ is easy to understand. 
+    \begin{equation*}
+        \{Y\in C_\alpha(X)\}=\{R\leq R_{(k')}^{(l')}\},
+    \end{equation*}
+    where $R_{(k')}^{(l')}$ is the $l'$-th smallest of $R_{(k')}^i$. Order statistic has explicit distribution, assume $R_k^i\sim G$, then $R_{(k)}^i\sim \overset{m}{\underset{j=k}\sum}C_m^jG^j(1-G)^{m-j}$, and further calculate the quantile of quantile can get the distribution of $\hat{q}$. This implies $k',\ l'$ can be find through simple calculation.
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
