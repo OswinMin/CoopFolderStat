@@ -1,0 +1,47 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Federated Learning}}
+\author{Min, Xia}
+\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section{General}
+    Many models that power intelligent behavior on mobile devices fit the federated learning setting. Consider image classification, for example predicting which photos are most likely to be viewed multiple times in the future, or shared. All the photos a user takes can be privacy sensitive, and the distributions from which these examples are drawn are also likely to differ substantially from easily available proxy datasets. And finally, the labels for these problems are directly available: photo labels can be defined by natural user interaction with their photo app.
+
+
+\section{Federated Learning Article1}
+    Communication-Efficient Learning of Deep Networks from Decentralized Data\cite{mcmahan2017communication}
+    
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
