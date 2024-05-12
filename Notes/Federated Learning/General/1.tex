@@ -47,6 +47,40 @@
 
 \section{Federated Learning Article1}
     Communication-Efficient Learning of Deep Networks from Decentralized Data\cite{mcmahan2017communication}
+
+
+    The core idea lies here is quite simple. The global target is minimize $f(w)=\dfrac{1}{n}\overset{n}{\underset{i=1}\sum}f_i(w)$. For $K$ agents with sample index set $\mathcal{P}_k$ and $|\mathcal{P}_k|=n_k$, then $f(w)=\overset{K}{\underset{k=1}\sum}\dfrac{n_k}{n}F_k(w)$,where $F_k(w)=\dfrac{1}{n_k}\overset{}{\underset{i\in\mathcal{P}_k}\sum}f_i(w)$.
+
+
+    The FedAvg algorithm is as follows:
+    \begin{itemize}
+        \item At step $t$ has a global parameter $w_t$ and is transmitted to a partion $C$ of all clients. Each of these agent calculates an updated parameter $w_k^{t+1}$ by, say, SGD or multiple steps of SGD, and transmitted to central server.
+        \item On client split sample into $B$ batches and update parameter by batchSGD for $E$ epoches and get $w_k^{t+1}$.
+        \item Central server update parameter by $w_{t+1}=\overset{K}{\underset{k=1}\sum}\dfrac{n_k}{n}w_k^{t+1}$.
+    \end{itemize}
+
+
+\section{Federated Learning Article2}
+    Federated Optimization in Heterogeneous Networks\cite{li2020federated}
+
+
+    The core idea is that, target is minimize $f(w)=\overset{K}{\underset{k=1}\sum}p_kF_k(w)=\overset{K}{\underset{k=1}\sum}E_k\left[ F_k(w) \right]$, where $\overset{K}{\underset{k=1}\sum}p_k=1$ and $F_k(w)=E_{x_k,y_k\sim D_k}\left[ f_k(w;x_k,y_k) \right]$. Sample be covariate $x_k$ with label $y_k$ and some loss $f_k(w;x_k,y_k)$. Highlight that $D_k$ can be very different for different $k$.
+
+
+    Under this setting, FedAvg may diverge because choose a large $E$, for a same $w_t$, $w_k^{t+1}$ can be very different for different $k$. Thus when client updates its parameter, we require it can't go too far from last step(otherwise the sum may diverge).
+
+
+    \begin{definition}[$\gamma_k^t$-inexact solution]
+        Define function $h_k(w;w_t)=F_k(w)+\mu|w-w_t|^2/2$, where $F_k$ is defined as previous in article1 and a given constant $\gamma\in[0,1]$, say $w$ is $\gamma_k^t$-inexact solution of $\min h_k(w;w_t)$ if all $k,\ t$, $|\nabla h_k(w;w_t)|\leq\gamma_k^t|\nabla h_k(w;w_t)$.
+    \end{definition}
+
+
+    This article gives FedProx as follows
+    \begin{itemize}
+        \item Select a subset $S_t$ of all K agents randomly and send $w_t$ to each agent.
+        \item Each agent calculates a $\gamma_k^t$-inexact minimizer $w_k^{t+1}$ of $h_k(w;w_t)=F_k(w)+\mu|w-w_t|^2/2$, and send $w_k^{t+1}$ back to central server.
+        \item Update $w_{t+1}=\dfrac{1}{|S_t|}\overset{}{\underset{k\in S_t}\sum}w_k^{t+1}$.
+    \end{itemize}
     
 \newpage
 \bibliographystyle{plain}
