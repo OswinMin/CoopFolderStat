@@ -38,6 +38,13 @@
     Many models that power intelligent behavior on mobile devices fit the federated learning setting. Consider image classification, for example predicting which photos are most likely to be viewed multiple times in the future, or shared. All the photos a user takes can be privacy sensitive, and the distributions from which these examples are drawn are also likely to differ substantially from easily available proxy datasets. And finally, the labels for these problems are directly available: photo labels can be defined by natural user interaction with their photo app.
 
 
+    Most important property of federated setting:
+    \begin{itemize}
+        \item Non-IID: The data on each client has different population distributions.
+        \item Unbalanced: Each agent has very different size of training data.
+    \end{itemize}
+
+
 \section{Federated Learning Article1}
     Communication-Efficient Learning of Deep Networks from Decentralized Data\cite{mcmahan2017communication}
     
