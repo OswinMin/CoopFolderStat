@@ -74,6 +74,15 @@
     \end{definition}
 
 
+    \begin{definition}[Conditional Validity]\cite{vovk2012conditional}
+        Call a conformal set $C_\alpha$ is $(\varepsilon,\delta)$ valid if 
+        \begin{equation*}
+            P(\{X:P(Y\in C_\alpha(X))\geq 1-\varepsilon\})\geq 1-\delta,
+        \end{equation*}
+        which means we have enough, probability $1-\delta$, $X$ makes conditional coverage is guaranteed.
+    \end{definition}
+
+
     \begin{definition}[Conformal Score Function]
         For data pair $(X,Y)$ and point predictor and any loss function $V(\cdot,\cdot)$, call $R=S(X,Y)=V(Y,\hat{f}(X))$ be the conformal score(or residual).
     \end{definition}
