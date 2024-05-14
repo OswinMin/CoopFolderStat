@@ -1,0 +1,68 @@
+\documentclass[12pt, a4paper, oneside]{article}
+\usepackage{amsmath, amsthm, amssymb, appendix, bm, graphicx, hyperref, mathrsfs, makecell}
+\usepackage{bbm, stfloats, subfigure, pythonhighlight, CJK, algorithm, algorithmicx, algpseudocode}
+\usepackage{geometry}
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand\headrulewidth{.5pt}
+\renewcommand\footrulewidth{0pt}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{\textit{\leftmark}}
+\fancyhead[R]{\thepage}
+
+\title{\textbf{Multi-Task Learning(MTL)}}
+% \author{Min, Xia}
+\date{\today}
+\linespread{1.6}
+\definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
+\definecolor{darckGreen}{rgb}{0.1797,0.543,0.3398}
+%{\color{lightBlue}Text Here}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\abstractname}{\Large\textbf{Abstract}}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\section{Introduction}
+    When the original data representation is high dimensional and the number of examples provided to solve a regression or classification problem is limited, any learning algorithm which does not use any sort of prior knowledge will
+    perform poorly due to lack of data to reliably estimate the model parameters.
+
+
+    If several related tasks are available, we can combine these tasks to boost performance on each single task. The philosophy is what is learned for each task can help other tasks be learned better. Assume $T$ tasks each task $t$ has dataset $Z_t=\{(X_{t,i},Y_{t,i})\}_{i=1}^{n_t}$, where $X_{t,i},Y_{t,i}\sim P^t$ which has a common sample space $\mathcal{X}\times\mathcal{Y}\subset\mathbb{R}^d\times\mathbb{R}$. MTL can be divided into several categories:
+    \begin{itemize}
+        \item Feature based: aims to learn common features among different tasks
+        \item Instance based: share identified useful data
+        \item Parameter based: share some common model parameters
+    \end{itemize}
+
+
+\section{Feature Based MTL}
+    The core idea here is if all $T$ tasks are related, there may exist some hidden feature space $\mathcal{H}$ that first find a common map $h:\mathcal{X}\rightarrow\mathcal{H}$ for all $T$ tasks and $Y_{t,i}|h(X_{t,i})$ may be easy to calculate.
+
+
+    A simple setting is by Argyriou\cite{argyriou2008convex}, assume we need to estimate
+    \begin{equation*}
+        EY_t|X_t=f_t(X_t)=a_t^TUX_t,\ U\in\mathcal{O}(\mathbb{R}^{d\times d})
+    \end{equation*}
+    which can be understood as a orthogonal projection $U\in\mathbb{R}^{d\times d}$ map $X_t$ to a hidden space $\mathcal{H}$, and for different task $t$ the target is some linear combinition of the hidden feature with parameter $a_t\in\mathbb{R}^d$.
+
+
+    Let $A=(a_1^T,\cdots,a_T^T)\in\mathbb{R}^{d\times T}$, a regularized error function with loss $L$ can be
+    \begin{equation*}
+        Err(A,U)=\overset{T}{\underset{t=1}\sum}\overset{n_t}{\underset{i=1}\sum}L(Y_{t,i},a_t^TUX_{t,i})+\gamma||A||_2^2.
+    \end{equation*}
+\newpage
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
