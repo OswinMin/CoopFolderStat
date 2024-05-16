@@ -193,6 +193,69 @@
     \end{equation*}
 
 
+\section{Standard CP under Nonexchangeability}
+    Conformal Prediction Beyond Exchangeability\cite{barber2023conformal}
+
+
+    When data is not exchangeable, like covariate shift setting, standard CP is not valid. This article gives a more general method under unknown distribution nonexchangeability.
+
+
+    \begin{definition}[Total Variation of Distribution]
+        Given two distribution with density $p(x),\ q(x)$ the total variation is defined as
+        \begin{equation*}
+            d_{TV}(p,q)=\dfrac{1}{2}\int|p(x)-q(x)|dx
+        \end{equation*}
+    \end{definition}
+
+
+    Assume data $Z=\{(Z_1=(X_1,Y_1),t_1),\cdots,(Z_{n+1}=(X_{n+1},Y_{n+1}),t_{n+1})\}$ and $Z^k$ be data sequence swap $Z_k$ and $Z_{n+1}$ in $Z$($t$ remains the same), $Z^{n+1}=Z$. Train a asymmetric point estimator based on $Z^k$ call $\hat{f}^k$. And let the residual of sample $i$ based on $\hat{f}^k$ be $R_i^k=|Y_i-\hat{f}^k(X_i)|$. Given weights $w_i,\ i=1,\cdots,n+1$ and choose $K=i$ with probability $w_i$. Define conformal set
+    \begin{equation*}
+        C_\alpha(X_{n+1})=\left\{ y:R_{n+1}^K\leq Q(1-\alpha,\overset{n+1}{\underset{i=1}\sum}w_i\delta_{R_i^K}) \right\}.
+    \end{equation*}
+
+
+    First calculate
+    \begin{align*}
+        \left\{ Y_{n+1}\notin C_\alpha(X_{n+1}) \right\}&=\left\{ R_{n+1}^K> Q(1-\alpha,\overset{n+1}{\underset{i=1}\sum}w_i\delta_{R_i^K}) \right\}\\
+        &=\left\{ R_{n+1}^K> Q(1-\alpha,\overset{n}{\underset{i=1}\sum}w_i\delta_{R_i^K}+w_{n+1}\delta_{\infty}) \right\}
+    \end{align*}
+    notice
+    \begin{align*}
+        \overset{n}{\underset{i=1}\sum}w_i\delta_{R_i^K}+w_{n+1}\delta_{\infty}&=\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K(\delta_{R_K^K}+\delta_{\infty})+(w_{n+1}-w_K)\delta_{\infty}\\
+        \text{As $\delta_{\infty}\leq\delta_{x},\forall x\in\mathbb{R}$, }&\leq\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K(\delta_{R_K^K}+\delta_{R_{n+1}^K})+(w_{n+1}-w_K)\delta_{\infty}\\
+        \text{As $w_{n+1}\geq w_K$, }&\leq\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K(\delta_{R_K^K}+\delta_{R_{n+1}^K})+(w_{n+1}-w_K)\delta_{R_K^K}\\
+        &=\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K\delta_{R_{n+1}^K}+w_{n+1}\delta_{R_K^K},
+    \end{align*}
+    thus
+    \begin{equation*}
+        Q(1-\alpha,\overset{n}{\underset{i=1}\sum}w_i\delta_{R_i^K}+w_{n+1}\delta_{\infty})\geq Q(1-\alpha,\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K\delta_{R_{n+1}^K}+w_{n+1}\delta_{R_K^K}),
+    \end{equation*}
+    and
+    \begin{equation*}
+        \left\{ Y_{n+1}\notin C_\alpha(X_{n+1}) \right\}\subset\left\{ R_{n+1}^K\geq Q(1-\alpha,\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K\delta_{R_{n+1}^K}+w_{n+1}\delta_{R_K^K}) \right\}.
+    \end{equation*}
+
+
+    Let $R^k=(R_1^k,\cdots,R_{k-1}^k,R_{n+1}^k,R_{k+1}^k,\cdots,R_n^k,R_k^k),\ r=(r_1,\cdots,r_{n+1})$ and $S(r)=\{j\in[n+1]:r_j>Q(1-\alpha,\overset{n+1}{\underset{i=1}\sum}w_i\delta_{r_i})\}$. As assume $r=R^k$, $r_k=R_{n+1}^k$
+    \begin{align*}
+        \left\{ R_{n+1}^K\geq Q(1-\alpha,\overset{}{\underset{i\neq K}\sum}w_i\delta_{R_i^K}+w_K\delta_{R_{n+1}^K}+w_{n+1}\delta_{R_K^K}) \right\}=\left\{ K\in S(R^K) \right\}.
+    \end{align*}
+    Finally we have
+    \begin{align*}
+        P(\left\{ Y_{n+1}\notin C_\alpha(X_{n+1}) \right\})&\leq P(K\in S(R^K))\\
+        &=\overset{n+1}{\underset{i=1}\sum}w_iP(i\in S(R^i)),
+    \end{align*}
+    notice 
+    \begin{equation*}
+        P(i\in S(R^i))=\int_{\Omega_i}dP(R^i)\leq \int_{\Omega_i}dP(R^{n+1})+\int\Big|dP(R^i)-dP(R^{n+1})\Big|,
+    \end{equation*}
+    thus
+    \begin{align*}
+        P(\left\{ Y_{n+1}\notin C_\alpha(X_{n+1}) \right\})&\leq P(K\in S(R^K))\\
+        &=\overset{n+1}{\underset{i=1}\sum}w_iP(i\in S(R^{n+1})+\overset{n}{\underset{i=1}\sum}w_id_{TV}(R^i,R^{n+1})).
+    \end{align*}
+
+
 \section{Federated Conformal Prediction Article1}
     Efficient Conformal Prediction under Data Heterogeneity\cite{plassier2024efficient}
 
