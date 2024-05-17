@@ -97,7 +97,7 @@
     \begin{itemize}
         \item First divide training set $D$ into two sets: $D_1$ for proper training set and $D_2$ for calibration set. And let $n_i=|D_i|$, fit point predictor $\hat{f}_1$ on $D_1$.
         \item Calculate residuals on $D_2$: $R_i=\Big|Y_i-\hat{f}_1(X_i)\Big|,\ i\in D_2$.
-        \item Find quantile on calibration residuals: $\hat{q}_2=\lceil (1-\alpha)(n_2+1)\rceil$ smallest of $R_i,\ i\in D_2$.
+        \item Find quantile on calibration residuals: $\hat{q}_2=\lceil (1-\alpha)n_2\rceil$ smallest of $R_i,\ i\in D_2$.
         \item Construct a conformal set: $C_\alpha(x)=\left[ \hat{f}_1(x)-\hat{q}_2,\hat{f}_1(x)+\hat{q}_2 \right]$.
     \end{itemize}
 
@@ -161,7 +161,7 @@
     \end{gather*}
     \begin{itemize}
         \item Fix any trial data $y$ to construct training set $\left\{ (X_1,Y_1),\cdots,(X_n,Y_n),(X_{n+1},y) \right\}$. Train point predictor $\hat{f}$ on new training set.
-        \item Calculate nonconformity scores $R_i=V(X_i,Y_i),\ i\in\{1,\cdots,n\},\ R_{n+1}=V(X_{n+1},y)$ based on $\hat{f}$.
+        \item Calculate nonconformity scores $R_i=S(X_i,Y_i),\ i\in\{1,\cdots,n\},\ R_{n+1}=S(X_{n+1},y)$ based on $\hat{f}$.
         \item Calculate importance weights $p_i$ based on likelihood ratio $w$:
         \begin{gather*}
             w(x)=\dfrac{dP'_X(x)}{dP_X(x)},\\
@@ -252,7 +252,7 @@
     thus
     \begin{align*}
         P(\left\{ Y_{n+1}\notin C_\alpha(X_{n+1}) \right\})&\leq P(K\in S(R^K))\\
-        &=\overset{n+1}{\underset{i=1}\sum}w_iP(i\in S(R^{n+1})+\overset{n}{\underset{i=1}\sum}w_id_{TV}(R^i,R^{n+1})).
+        &=\overset{n+1}{\underset{i=1}\sum}w_iP(i\in S(R^{n+1}))+\overset{n}{\underset{i=1}\sum}w_id_{TV}(R^i,R^{n+1}).
     \end{align*}
 
 
