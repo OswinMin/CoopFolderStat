@@ -11,7 +11,7 @@
 \fancyhead[L]{\textit{\leftmark}}
 \fancyhead[R]{\thepage}
 
-\title{\textbf{Title}}
+\title{\textbf{Federated CP New Setting}}
 \author{Min, Xia}
 \date{\today}
 \linespread{1.6}
@@ -34,7 +34,20 @@
 \maketitle
 \setcounter{page}{1}
 \pagenumbering{arabic}
-\section{Section}
-    $Y=f(X)+\varepsilon$
+\section{Idea1}
+    For $K$ agents each with $Z_k=\{(X_i^k,Y_i^k)\}_{i=1}^{n_k}$ sampled from distribution $P^k$, and point predictor $f_1$ based score $S_i^k$. If all $P^k=P$ and a new test point $X,Y$ from $P^1$. For any trial data $y$ and score $S$ follow the procedure in "Conformal prediction with local weights: randomization enables robust guarantees"\cite{hore2023conformal}:
+    \begin{itemize}
+        \item Find some kernel function $H(\cdot,\cdot)$, sample $\tilde{X}$ based on $H(X,\cdot)$.
+        \item Calculate empirical function $\tilde{F}=\overset{}{\underset{i,k}\sum}w_i^k\delta_{S_i^k}+w\delta_{S}$ with weight
+        \begin{equation*}
+            w_i^k=\dfrac{H(X_i^k,\tilde{X})}{\overset{}{\underset{i',k'}\sum}H(X_{i'}^{k'},\tilde{X})+H(X,\tilde{X})},\ w=\dfrac{H(X,\tilde{X})}{\overset{}{\underset{i',k'}\sum}H(X_{i'}^{k'},\tilde{X})+H(X,\tilde{X})}.
+        \end{equation*}
+        \item Conformal set is $C_\alpha(X)=\{S\leq Q(1-\alpha,\tilde{F})\}$.
+    \end{itemize}
+
+
+    However for all $k$ $P^k=P$ is not practical, potential covariate shift exists
 \newpage
+\bibliographystyle{plain}
+\bibliography{ref}
 \end{document}

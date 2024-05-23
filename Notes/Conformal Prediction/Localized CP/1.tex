@@ -174,6 +174,27 @@
 
         For agent $1,\cdots,K$ each with distribution $P^k$ we can try to find some kernel $K$ to estimate the distance between agent $i,\ j$ and further construct the distribution or find $\alpha'$.
     \end{remark}
+
+
+\section{Localized CP Article5}
+    Conformal prediction with local weights: randomization enables robust guarantees\cite{hore2023conformal}
+
+
+    Assume using training dataset $(X_1,Y_1),\cdots,(X_n,Y_n)$ and a test point $(X_{n+1},Y_{n+1})$ all come from distribution $P=P_X\times P_{Y|X}$. Given a new $X_{n+1}$, sample $\tilde{X}$ based on $X_{n+1}$ with density $H(X_{n+1},\cdot)$ where $H$ be some kernel function. Thus $X_{n+1},\tilde{X}$ has joint density
+    \begin{equation*}
+        P_X(X_{n+1})H(X_{n+1},\tilde{X}).
+    \end{equation*}
+    Conditional on $\tilde{X}$(means be considered as a given constant) and density of $X_{n+1}$ is propotional to $P_X(X_{n+1})H(X_{n+1},\tilde{X})$ and finally the density ratio between $X_{n+1}$ and $X_{i},i\leq n$ is propotional to $H(X_{n+1},\tilde{X})$.
+
+
+    This means conditional on $\tilde{X}$ and $X_{n+1}$ has a covariate shift $H(X_{n+1},\tilde{X})$ according to the training dataset. Construct empirical distribution
+    \begin{equation*}
+        \tilde{F}=\overset{n}{\underset{i=1}\sum}\tilde{w}_i\delta_{S_i}+\tilde{w}_{n+1}\delta_{\infty},\ \tilde{w}_i=\dfrac{H(X_i,\tilde{X})}{\overset{n+1}{\underset{j=1}\sum}H(X_j,\tilde{X})}.
+    \end{equation*}
+    The conformal set is $C_\alpha(X_{n+1})=\{y:S_{n+1}\leq Q(1-\alpha,\tilde{F})\}$.
+
+
+    The coverage $\mathbb{P}(Y_{n+1}\in C_\alpha(X_{n+1}))\geq 1-\alpha$ according to Tibshirani\cite{tibshirani2019conformal}.
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
