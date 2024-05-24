@@ -5,6 +5,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
 
+# 生成不同 X 来自 N(loc, 3)
+# 对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
+
 ep = 0.5 # scale(sigma)
 def Xshift(n, loc, f):
     """
@@ -27,17 +30,31 @@ def fun(X):
     :param X: ndarray of length [n]
     :return: X^2 + ep*|X|
     """
-    return X**2 + np.abs(X)*np.random.normal(0, ep, len(X))
+    return X**2 + (np.abs(X))*ep*np.random.normal(0, 1, len(X))
 
 def trueConf(X):
-    return np.vstack([X**2+stats.norm.ppf(0.05)*ep*np.abs(X), X**2+stats.norm.ppf(0.95)*ep*np.abs(X)])
+    return np.vstack([X**2+stats.norm.ppf(0.05)*ep*(np.abs(X)),
+                      X**2+stats.norm.ppf(0.95)*ep*(np.abs(X))])
+
+def genLoc(num, loc):
+    """
+    generate loc matrix
+    :param num: number of samples each agent, n
+    :param loc: location of each agent, length k
+    :return: n*k np.ndarray, n copies of loc
+    """
+    loc_ = np.ones((num, len(loc)))
+    return loc_*loc
 
 class Predictor(nn.Module):
-    def __init__(self):
+    def __init__(self, hidden):
+        """
+        :param hidden: list of length 2
+        """
         super(Predictor, self).__init__()
-        self.l1 = nn.Linear(1, 8)
-        self.l2 = nn.Linear(8, 4)
-        self.l3 = nn.Linear(4, 1)
+        self.l1 = nn.Linear(1, hidden[0])
+        self.l2 = nn.Linear(hidden[0], hidden[1])
+        self.l3 = nn.Linear(hidden[1], 1)
         self.R = nn.ReLU()
 
     def forward(self, x):

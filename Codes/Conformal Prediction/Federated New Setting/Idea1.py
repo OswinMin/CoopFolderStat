@@ -6,8 +6,24 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
 import matplotlib.pyplot as plt
+import hashlib
+
+"""
+True X has covariate shift
+True Y is same conditional on X
+Any new test X0
+draw Xtilde based on H(,X0)
+Construct weight based on Xtilde and H(Xtidle,X) placed on Score
+"""
 
 h = 0.5
+
+
+def sha256(input_string):
+    sha256 = hashlib.sha256()
+    sha256.update(input_string.encode('utf-8'))
+    hash_value = sha256.hexdigest()
+    return hash_value
 
 def calScore(X, Y, predictor):
     Yhat = predictor(torch.tensor(X).float())
@@ -33,7 +49,7 @@ def ReSampling(X, h):
     class cd(stats.rv_continuous):
         def _pdf(self, x, *args):
             return GaussianKernel(x, X, h)
-    cd_ = cd()
+    cd_ = cd(a=X-ep*np.abs(X)*5, b=X+ep*np.abs(X)*5)
     samples = cd_.rvs(size=1)
     return samples
 
@@ -86,7 +102,7 @@ def Test(X0:np.ndarray, X, Y, predictor):
             - stats.norm.cdf(Conf1[0,i], loc=X0[i]**2, scale=ep*np.abs(X0[i]))
     return Conf0, Conf1, P
 
-def Draw(X, Y, X0, Conf0, Conf1):
+def Draw(X, Y, X0, Conf0, Conf1, st):
     plt.figure(figsize=(8,6))
     X = X.reshape(-1)
     Y = Y.reshape(-1)
@@ -97,18 +113,24 @@ def Draw(X, Y, X0, Conf0, Conf1):
     plt.plot(X0, Conf0[1,:], color='red')
     plt.plot(X0, Conf1[0,:], color='blue')
     plt.plot(X0, Conf1[1,:], color='blue')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title(st)
+    plt.savefig(f"resultFig/{sha256(st)[:5]}.png", dpi=400)
     plt.show()
 
 if __name__ == '__main__':
-    h = 0.5
-    X, Y = Xshift(500, [0, 0.1, 0.2, -0.05, 0.6, -1], fun)
-    predictor = Predictor()
-    predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=200)
-    X0 = np.linspace(-3,3,500)
+    h = 1
+    loc = [0, 12]
+    num = 5000
+    X, Y = Xshift(num, loc, fun)
+    predictor = Predictor([16,8])
+    predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=300)
+    X0 = np.linspace(-5,17,500)
     Conf0 = []
     Conf1 = []
     P = []
-    for i in range(10):
+    for i in range(2):
         Conf0_, Conf1_, P_ = Test(X0, X, Y, predictor)
         Conf0.append(Conf0_)
         Conf1.append(Conf1_)
@@ -120,4 +142,4 @@ if __name__ == '__main__':
         Conf1_ += Conf1[i]
     Conf0_ /= len(Conf0)
     Conf1_ /= len(Conf1)
-    Draw(X, Y, X0, Conf0_, Conf1_)
+    Draw(X, Y, X0, Conf0_, Conf1_, f"{num}, {loc}")
