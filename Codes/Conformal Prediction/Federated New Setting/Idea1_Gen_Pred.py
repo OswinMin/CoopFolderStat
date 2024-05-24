@@ -3,7 +3,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
+import scipy.stats as stats
 
+ep = 0.5 # scale(sigma)
 def Xshift(n, loc, f):
     """
     X has shift but Y|X remains same
@@ -15,7 +17,7 @@ def Xshift(n, loc, f):
     X = np.zeros((n, len(loc)))
     Y = np.zeros((n, len(loc)))
     for i in range(len(loc)):
-        X[:, i] = np.random.normal(loc[i], 1, n)
+        X[:, i] = np.random.normal(loc[i], 3, n)
         Y[:, i] = f(X[:, i])
     return X, Y
 
@@ -25,7 +27,10 @@ def fun(X):
     :param X: ndarray of length [n]
     :return: X^2 + ep*|X|
     """
-    return X*2 + np.abs(X)*np.random.normal(0, 0.03, len(X))
+    return X**2 + np.abs(X)*np.random.normal(0, ep, len(X))
+
+def trueConf(X):
+    return np.vstack([X**2+stats.norm.ppf(0.05)*ep*np.abs(X), X**2+stats.norm.ppf(0.95)*ep*np.abs(X)])
 
 class Predictor(nn.Module):
     def __init__(self):
