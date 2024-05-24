@@ -306,3 +306,4 @@ TSWLatexianTemp*
 
 # pycharm work file
 .idea/
+__pycache__/
