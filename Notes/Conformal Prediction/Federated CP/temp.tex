@@ -49,7 +49,44 @@
     However for all $k$ $P^k=P$ is not practical, potential covariate shift exists
 
 \subsection{Experiment1}
-    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter.
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
+
+    \begin{itemize}
+        \item $X$ has different distribution for each agents
+        \item $EY|X$ is same for all agents
+        \item $Y-EY|X$ has same distribution for all agents
+    \end{itemize}
+    
+
+    Covariate shift has little influence on this method as the method is localized.
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/0_1_.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/0_10_20.png}
+        \end{minipage}
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/0_8_18.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/0_18.png}
+        \end{minipage}
+    \end{figure}
+
+\subsection{Experiment2}
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|+ep*\theta_k)^2)$, $ep$ be some parameter and $\theta_k$ generated for each agent randomly between $1$ and $10$.
+    \begin{itemize}
+        \item $X$ has different distribution for each agents
+        \item $EY|X$ is same for all agents
+        \item $Y-EY|X$ has different distribution for different agents
+    \end{itemize}
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
