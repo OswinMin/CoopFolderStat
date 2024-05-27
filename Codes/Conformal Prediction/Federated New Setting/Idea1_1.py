@@ -116,7 +116,7 @@ def Draw(X, Y, X0, Conf0, Conf1, st):
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title(st)
-    plt.savefig(f"resultFig/Idea1/{sha256(st)[:5]}.png", dpi=400)
+    plt.savefig(f"resultFig/Idea1_1/{sha256(st)[:5]}.png", dpi=400)
     plt.show()
 
 if __name__ == '__main__':
