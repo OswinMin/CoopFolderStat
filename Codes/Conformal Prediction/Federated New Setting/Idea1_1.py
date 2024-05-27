@@ -1,4 +1,4 @@
-from Idea1_Gen_Pred import *
+from Idea1_1_Gen_Pred import *
 import numpy as np
 import torch
 import torch.nn as nn
@@ -121,12 +121,12 @@ def Draw(X, Y, X0, Conf0, Conf1, st):
 
 if __name__ == '__main__':
     h = 1
-    loc = [0, 1]
+    loc = [0, 18, 18, 18, 18, 18, 18]
     num = 1000
     X, Y = Xshift(num, loc, fun)
     predictor = Predictor([18,9])
-    predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=300)
-    X0 = np.linspace(-5,5,500)
+    predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=100)
+    X0 = np.linspace(-4,4,500)
     Conf0 = []
     Conf1 = []
     P = []
