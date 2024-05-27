@@ -121,12 +121,36 @@ def Draw(X, Y, X0, Conf0, Conf1, st):
 
 if __name__ == '__main__':
     h = 1
-    loc = [0, 18, 18, 18, 18, 18, 18]
+    loc = [0, 20]
     num = 1000
     X, Y = Xshift(num, loc, fun)
     predictor = Predictor([18,9])
     predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=100)
     X0 = np.linspace(-4,4,500)
+    Conf0 = []
+    Conf1 = []
+    P = []
+    for i in range(2):
+        Conf0_, Conf1_, P_ = Test(X0, X, Y, predictor)
+        Conf0.append(Conf0_)
+        Conf1.append(Conf1_)
+        P.append(P_)
+    Conf0_ = np.zeros_like(Conf0_)
+    Conf1_ = np.zeros_like(Conf1_)
+    for i in range(len(Conf0)):
+        Conf0_ += Conf0[i]
+        Conf1_ += Conf1[i]
+    Conf0_ /= len(Conf0)
+    Conf1_ /= len(Conf1)
+    Draw(X, Y, X0, Conf0_, Conf1_, f"{num}, {loc}")
+
+    ####
+    loc = [0]
+    num = 1000
+    X, Y = X[:,[0]], Y[:,[0]]
+    predictor = Predictor([18, 9])
+    predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=100)
+    X0 = np.linspace(-4, 4, 500)
     Conf0 = []
     Conf1 = []
     P = []

@@ -94,7 +94,7 @@ def Test(X0:np.ndarray, X, Y, theta, predictor):
     Xtilde = [ReSampling(X0[i], h)[0] for i in range(len(X0))]
     lowerbound0, upperbound0 = trueConf(X0, theta[0])
     lowerbound1, upperbound1 = np.zeros_like(lowerbound0), np.zeros_like(lowerbound0)
-    P = np.zeros(len(Xtilde))
+    P = np.zeros(len(Xtilde)) # conditional coverage
     Y0hat = predictor(torch.tensor(X0).reshape(-1, 1).float()).detach().numpy().reshape(-1)
     Score = calScore(X.reshape(-1, 1), Y.reshape(-1, 1), predictor).reshape(X.shape[0], -1)
     for i in range(len(X0)):
