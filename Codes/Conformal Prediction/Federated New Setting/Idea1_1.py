@@ -116,17 +116,17 @@ def Draw(X, Y, X0, Conf0, Conf1, st):
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title(st)
-    plt.savefig(f"resultFig/{sha256(st)[:5]}.png", dpi=400)
+    plt.savefig(f"resultFig/Idea1/{sha256(st)[:5]}.png", dpi=400)
     plt.show()
 
 if __name__ == '__main__':
     h = 1
-    loc = [0, 12]
-    num = 5000
+    loc = [0, 1]
+    num = 1000
     X, Y = Xshift(num, loc, fun)
-    predictor = Predictor([16,8])
+    predictor = Predictor([18,9])
     predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=300)
-    X0 = np.linspace(-5,17,500)
+    X0 = np.linspace(-5,5,500)
     Conf0 = []
     Conf1 = []
     P = []
