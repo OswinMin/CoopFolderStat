@@ -12,7 +12,7 @@
 \fancyhead[R]{\thepage}
 
 \title{\textbf{Federated CP New Setting}}
-\author{Min, Xia}
+\author{Min}
 \date{\today}
 \linespread{1.6}
 \definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
@@ -58,7 +58,7 @@
     \end{itemize}
     
 
-    Covariate shift has little influence on this method as the method is localized. More on Fig \ref{Fig1}.
+    Covariate shift has little influence on this method as the method is localized. More on Fig \ref{Fig1}. $ep=h=0.5$
     \begin{figure}[htbp]
         \centering
         \begin{minipage}{0.495\linewidth}
@@ -104,6 +104,111 @@
         \item $EY|X$ is same for all agents
         \item $Y-EY|X$ has different distribution for different agents
     \end{itemize}
+
+    The heterogeneity greatly influences the performance as this method treat data from different agents with same operation with respect to covariates. See in Fig \ref{Fig3}. $ep=h=0.5$.
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5_10.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0}
+        \end{minipage}
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_6.png}
+        \end{minipage}
+        \caption{Fig3}
+        \label{Fig3}
+    \end{figure}
+
+
+    To see how extra agent information influences performance, assume 4 agents with location 0, 5, 5, 10 and $\theta=(9.8, 2.1, 1.6, 6.3)$. Use only first agent data to estimate(left) and compare with the performance using all agents(right) in Fig \ref{Fig4}.
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5_5_10.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0.png}
+        \end{minipage}
+        \caption{Fig4}
+        \label{Fig4}
+    \end{figure}
+
+
+\newpage
+\section{Idea2}
+    This idea is based on Guan\cite{guan2023localized}.
+
+
+    For $K$ agents each with $Z_k=\{Z_i^k=(X_i^k,Y_i^k)\}_{i=1}^{n_k}$ sampled from distribution $P^k$, and point predictor $f$ based score $S_i^k$.
+
+    
+    Given a new sample $X_{n_1+1}^1,Y_{n_1+1}^1$ from $P^1$, any trial data $y$ and $Z_{n_1+1}^1=(X_{n_1+1}^1,y)$. Now given some weight $p_{i,j}^{1,k}=\phi(Z_i^1,Z_j^k;Z_1,Z_k)$, where
+    \begin{equation*}
+        \phi(z,z';Z,Z'):\mathcal{Z}\times\mathcal{Z}\times\mathcal{Z}^{n}\times\mathcal{Z}^{n'}\rightarrow\mathbb{R},
+    \end{equation*}
+    is exchangeable within $Z$ and $Z'$ respectively. Construct
+    \begin{equation*}
+        \hat{F}_i^1=C_i\left[ \overset{K}{\underset{k=1}\sum}\overset{n_k}{\underset{j=1}\sum}p_{i,j}^{1,k}\delta_{S_j^k}+p_{i,n_1+1}^{1,1}\delta_{S_{n_1+1}^1} \right],\ i=1,\cdots,n_1+1.
+    \end{equation*}
+
+
+    Write $z_k=\{z_i^k=(x_i^k,y_i^k)\}_{i=1}^{n_k}$, corresponding score $s_i^k$, and $E_Z=\left\{ Z_1=z_1,\cdots,Z_K=z_K \right\}$. Write
+    \begin{equation*}
+        \hat{F}_i^{1'}=C_i\left[ \overset{K}{\underset{k=1}\sum}\overset{n_k}{\underset{j=1}\sum}p_{i,j}^{1,k}\delta_{s_j^k}+p_{i,n_1+1}^{1,1}\delta_{s_{n_1+1}^1} \right],\ i=1,\cdots,n_1+1.
+    \end{equation*}
+    Now calculate
+    \begin{align*}
+        &\mathbb{P}\left( S_{n_1+1}^1\leq Q(\alpha',\hat{F}_{n_1+1}^1)\Big|E_Z \right)\\
+        \text{$Z_{n_1+1}^1$ is r.v}=&\overset{n_1+1}{\underset{i=1}\sum}\mathbb{P}\left( Z_{n_1+1}^1=z_i^1\Big|E_Z \right)\mathbbm{1}\left( S_{n_1+1}^1\leq Q(\alpha',\hat{F}_{n_1+1}^1)\Big|E_Z,S_{n_1+1}^1=z_i^1 \right)\\
+        \text{Exchangeability of $Z_i^1$}=&\dfrac{1}{n_1+1}\overset{n_1+1}{\underset{i=1}\sum}\mathbbm{1}\left( S_{n_1+1}^1\leq Q(\alpha',\hat{F}_{n_1+1}^1)\Big|E_Z,Z_{n_1+1}^1=z_i^1 \right).
+    \end{align*}
+    Note the core idea lies here is that $\hat{F}_i^1$ is concentrated around point $X_i^1$. When $Z_{n_1+1}^1=Z_i^1$ and condition on $E_Z$, $\hat{F}_{n_1+1}^1=\hat{F}_i^{1'}$, thus
+    \begin{align*}
+        \mathbb{P}\left( S_{n_1+1}^1\leq Q(\alpha',\hat{F}_{n_1+1}^1)\Big|E_Z \right)=\dfrac{1}{n_1+1}\overset{n_1+1}{\underset{i=1}\sum}\mathbbm{1}\left( s_i^1\leq Q(\alpha',\hat{F}_i^{1'})\Big|E_Z \right).
+    \end{align*}
+    Find minimal $\alpha'$ makes $\dfrac{1}{n_1+1}\overset{n_1+1}{\underset{i=1}\sum}\mathbbm{1}\left( s_i^1\leq Q(\alpha',\hat{F}_i^{1'})\Big|E_Z \right)\geq 1-\alpha$, then we have
+    \begin{equation*}
+        \mathbb{P}\left( S_{n_1+1}^1\leq Q(\alpha',\hat{F}_{n_1+1}^1)\Big|E_Z \right)\geq 1-\alpha.
+    \end{equation*}
+
+
+    However the previous process is very difficult to calculate, next is a practical implement. Simplify problem to $n$ samples $X_1,\cdots,X_n;Y_1,\cdots,Y_n$ and score $S_1,\cdots,S_n$ with new test point $X_{n+1}$. Assume scores are ordered such that $S_1\leq\cdots\leq S_n$ and $S_{l_i}$ is the biggest $S_j$ smaller than $S_i$. For example if $S_i>S_{i-1}$, $l_i=i-1$, define $l_1=0$. Given kernel function calculated weight $p_{i,j}$ based on $X_i,X_j$. $p_{i,j}=p_{j,i}$ and $\overset{n+1}{\underset{j=1}\sum}p_{i,j}=1$.
+    \begin{itemize}
+        \item Define $\theta_i$ be cumulative probability centered on $X_i$ till $l_i$, which is $\theta_i=\overset{l_i}{\underset{j=1}\sum}p_{i,j}$.
+        \item Define $\tilde{\theta}_i$ be cumulative probability centered on $X_{n+1}$ till $l_i$, which is $\tilde{\theta}_i=\overset{l_i}{\underset{j=1}\sum}p_{n+1,j}$.
+        \item Find three disjoint index sets
+        \begin{align*}
+            A_1&=\left\{ i:\tilde{\theta}_i>\theta_i+p_{n+1,i} \right\}\\
+            A_2&=\left\{ i:\theta_i\geq\tilde{\theta}_i \right\}\\
+            A_3&=\left\{ i:\theta_i<\tilde{\theta}_i\leq\theta_i+p_{n+1,i} \right\}
+        \end{align*}
+        \item Define following sets
+        \begin{align*}
+            B_1&=\left\{ \theta_i+p_{n+1,i}:i\in A_1 \right\}\\
+            B_2&=\left\{ \theta_i:i\in A_2 \right\}\\
+            B_3&=\left\{ l_i:i\in A_3 \right\}
+        \end{align*}
+        \item For $k=1,\cdots,n+1$ do following separately:
+        \begin{itemize}
+            \item Count $n_1,n_2$ be the number of items in $B_1,B_2$ that smaller than $\tilde{\theta}_k$, $n_3$ be the number of items in $B_3$ that smaller than $l(k)$.
+            \item Define $T(k)=(n_1+n_2+n_3)/(n+1)$.
+        \end{itemize}
+        \item Find $k^*=\arg\max\left\{ k:S(k)<\alpha \right\}$. Take $S^*=S_{\min(n,k^*)}$.
+        \item Construct conformal set $C_\alpha(X_{n+1})=\left\{ y:S_{n+1}\leq S^* \right\}$.
+    \end{itemize}
+
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
