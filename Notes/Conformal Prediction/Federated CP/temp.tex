@@ -32,6 +32,7 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
 \setcounter{page}{1}
 \pagenumbering{arabic}
 \section{Idea1}
@@ -184,6 +185,7 @@
     \end{equation*}
 
 
+\subsection{Method under Simplified Setting}
     However the previous process is very difficult to calculate, next is a practical implement. Simplify problem to $n$ samples $X_1,\cdots,X_n;Y_1,\cdots,Y_n$ and score $S_1,\cdots,S_n$ with new test point $X_{n+1}$. Assume scores are ordered such that $S_1\leq\cdots\leq S_n$ and $S_{l_i}$ is the biggest $S_j$ smaller than $S_i$. For example if $S_i>S_{i-1}$, $l_i=i-1$, define $l_1=0$. Given kernel function calculated weight $p_{i,j}$ based on $X_i,X_j$. $p_{i,j}=p_{j,i}$ and $\overset{n+1}{\underset{j=1}\sum}p_{i,j}=1$.
     \begin{itemize}
         \item Define $\theta_i$ be cumulative probability centered on $X_i$ till $l_i$, which is $\theta_i=\overset{l_i}{\underset{j=1}\sum}p_{i,j}$.
@@ -209,6 +211,122 @@
         \item Construct conformal set $C_\alpha(X_{n+1})=\left\{ y:S_{n+1}\leq S^* \right\}$.
     \end{itemize}
 
+
+\subsection{Method under Current Setting}
+    Each agent $k=1,\cdots,K$ has $n_k$ labeled samples $Z_i^k=(X_i^k,Y_i^k)\sim P^k$, new test point $Z_{n_1+1}^1\sim P^1$ and all agents share common point estimator $f()$. Denote $S_i^k$ as the score. Construct
+    \begin{gather*}
+        \hat{F}_i^1(s)=\overset{K}{\underset{k=1}\sum}\overset{n_k}{\underset{j=1}\sum}p_{i,j}^{1,k}\delta_{S_j^k}+p_{i,n_1+1}^{1,1}\delta_s,\\
+        C_S(X_{n_1+1})=\left\{ s:s\leq Q(\alpha(s);\hat{F}_{n_1+1}^1(\infty)) \right\},
+    \end{gather*}
+    where $\alpha(s)$ is the smallest number satisfies
+    \begin{equation}
+        \dfrac{1}{n_1+1}\overset{n_1+1}{\underset{j=1}\sum}\mathbbm{1}\left( S_j^1\leq Q(\alpha(s);\hat{F}_j^1(s)) \right)\geq \alpha.\label{alphas}
+    \end{equation}
+
+
+    \begin{lemma}
+        Write $G=q_1\delta_{g_1}+\cdots+q_r\delta_{g_r}$, and assume $g_1\leq\cdots\leq g_r,q_1+\cdots+q_r=1$. We hava for any $\beta\in(0,1)$ and $t$
+        \begin{equation*}
+            \left\{ t\leq Q(\beta,G) \right\}\Leftrightarrow\left\{ \beta>\overset{}{\underset{i:g_i<t}\sum}q_i \right\}.
+        \end{equation*}
+    \end{lemma}
+
+
+    \subsubsection{Method Deduction}
+    By definition $s\in C_S(X_{n_1+1})\Leftrightarrow\alpha(s)>\overset{}{\underset{s_i^k<s}\sum}p_{n_1+1,i}^{1,k}\overset{def}{=}q(s)$. Assume $S_{i_2}^{k_2}<s<S_{i_1}^{k_1}$(take set closure ineq becomes eq). Denote
+    \begin{gather*}
+        \theta_j^1=\overset{}{\underset{S_i^k<S_j^1}\sum}p_{i,j}^{k,1}\\
+        \tilde{\theta}_i^k=\overset{}{\underset{S_{i'}^{k'}<S_i^k}\sum}p_{n_1+1,i'}^{1,k'}=q(S_i^k).
+    \end{gather*}
+    Based on the smallest property of $\alpha(s)$ in formula (\ref{alphas}),
+    \begin{equation*}
+        s\in C_S(X_{n_1+1})\Leftrightarrow\dfrac{1}{n_1+1}\overset{n_1+1}{\underset{j=1}\sum}\mathbbm{1}\left( S_j^1\leq Q(q(s);\hat{F}_j^1(s)) \right)<\alpha
+    \end{equation*}
+
+
+    When $S_{i_2}^{k_2}<s<S_{i_1}^{k_1}$, it's easy to find $\overset{}{\underset{s_i^k<s}\sum}p_{n_1+1,i}^{1,k}=\tilde{\theta}_{i_1}^{k_1}$. First hope to prove
+    \begin{equation}
+        \left\{ S_j^1\leq Q(q(s);\hat{F}_j^1(s)) \right\}=\left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(s)) \right\}=\left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(\tilde{\theta}_{i_2}^{k_2})) \right\}.
+    \end{equation}
+    Only to prove the last equation.
+
+
+    First notice that embedding $s$ into $\hat{F}_j^1$ makes
+    \begin{gather}
+        \left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(s)) \right\}=\left\{ \tilde{\theta}_{i_1}^{k_1}>\overset{}{\underset{S_i^k<S_j^1}\sum}p_{i,j}^{k,1} \right\}=\left\{
+            \begin{aligned}
+            &\left\{ \tilde{\theta}_{i_1}^{k_1}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\},S_j^1\geq S_{i_1}^{k_1}\label{fiseq1}\\
+            &\left\{ \tilde{\theta}_{i_1}^{k_1}>\theta_j^1 \right\},S_j^1<S_{i_1}^{k_1}.
+            \end{aligned}
+        \right.
+    \end{gather}
+    The $\overset{}{\underset{S_i^k<S_j^1}\sum}p_{i,j}^{k,1}$ is determined by the relationship between $s$ and $S_j^1$. When $s<S_j^1$ it equals to $\theta_j^1+p_{n_1+1,j}^{1,1}$, otherwise $\theta_j^1$.
+    \begin{enumerate}
+        \item $S_j^1\geq S_{i_1}^{k_1}$ leads to $S_j^1>s>S_{i_2}^{k_2}$ and this gives first formula in (\ref{fiseq1}). Finally
+        \begin{equation*}
+            \left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(\tilde{\theta}_{i_2}^{k_2})) \right\}=\left\{ \tilde{\theta}_{i_1}^{k_1}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}=\left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(s)) \right\}.
+        \end{equation*}
+        \item $S_j^1<S_{i_1}^{k_1}$, as $S_{i_2}^{k_2}$ is the next smallest beside $S_{i_1}^{k_1}$, leads to $S_j^1\leq S_{i_2}^{k_2}<s$. Thus gives second formula in (\ref{fiseq1}). Finally
+        \begin{equation*}
+            \left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(\tilde{\theta}_{i_2}^{k_2})) \right\}=\left\{ \tilde{\theta}_{i_1}^{k_1}>\theta_j^1 \right\}=\left\{ S_j^1\leq Q(\tilde{\theta}_{i_1}^{k_1};\hat{F}_j^1(s)) \right\}.
+        \end{equation*}
+    \end{enumerate}
+
+
+    Now fix $i,k$ and the next smallest beside $S_{i}^{k}$ is $S_{i'}^{k'}$, $M_{j,i}^{1,k}=\left\{ S_j^1\leq Q(\tilde{\theta}_{i}^{k};\hat{F}_j^1(S_{i'}^{k'})) \right\}$. Split $M_{j,i}^{1,k}$ into two disjoint sets $M1_{j,i}^{1,k}$ and $M2_{j,i}^{1,k}$
+    \begin{align*}
+        M_{j,i}^{1,k}=&\left\{ S_{i'}^{k'}<S_j^1\leq Q(\tilde{\theta}_{i}^{k};\hat{F}_j^1(S_{i'}^{k'})) \right\}\cup\left\{ S_j^1\leq\min\left( S_{i'}^{k'},Q(\tilde{\theta}_{i}^{k};\hat{F}_j^1(S_{i'}^{k'})) \right) \right\}\\
+        =&\left\{ S_{i'}^{k'}<S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}\cup\left\{ S_{i'}^{k'}\geq S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1 \right\}\\
+        =&\left\{ S_{i}^{k}\leq S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}\cup\left\{ S_{i}^{k}>S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1 \right\}.
+    \end{align*}
+
+
+    Similar to simplified setting find three disjoint index sets
+    \begin{align*}
+        A_1&=\left\{ j:\tilde{\theta}_j^1>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}\\
+        A_2&=\left\{ j:\theta_i^1\geq\tilde{\theta}_j^1 \right\}\\
+        A_3&=\left\{ j:\theta_j^1<\tilde{\theta}_j^1\leq\theta_j^1+p_{n_1+1,j}^{1,1} \right\}.
+    \end{align*}
+     
+
+    \begin{enumerate}
+        \item For $j\in A_1$, if $S_j^1<S_i^k$, directly we have $\tilde{\theta}_j^1<\tilde{\theta}_i^k$. As $j\in A_1$, $\tilde{\theta}_j^1>\theta_j^1+p_{n_1+1,j}^{1,1}$. Thus $\tilde{\theta}_{i}^{k}>\theta_j^1$ always hold. This means $\left\{ S_j^1<S_i^k,\tilde{\theta}_{i}^{k}\leq\theta_j^1+p_{n_1+1,j}^{1,1} \right\}=\emptyset$ and
+        \begin{equation*}
+            M_{j,i}^{1,k}=\left\{ S_j^1<S_i^k \right\}\cup\left\{ S_{i}^{k}\leq S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}=\left\{ \tilde{\theta}_{i}^{k}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}.
+        \end{equation*}
+        \item When $\tilde{\theta}_j^1\leq\theta_j^1+p_{n_1+1,j}^{1,1}$, if $S_i^k\leq S_j^1$, $\tilde{\theta}_i^k\leq\tilde{\theta}_j^1\leq\theta_j^1+p_{n_1+1,j}^{1,1}$ indicates $M1_{j,i}^{1,k}=\emptyset$ and $M_{j,i}^{1,k}=\left\{ S_{i}^{k}>S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1 \right\}$.
+        \item For $j\in A_2$, $M_{j,i}^{1,k}=\left\{ S_{i}^{k}>S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1 \right\}$.
+        \item For $j\in A_3$, when $S_i^k>S_j^1$, $\tilde{\theta}_{i}^{k}>\tilde{\theta}_{j}^{1}>\theta_j^1$ always hold. Thus $M_{j,i}^{1,k}=\left\{ S_{i}^{k}>S_j^1 \right\}$.
+    \end{enumerate}
+    In conclusion, given $k,i$, calculate $A_1,A_2,A_3$ and $S_{i'}^{k'}<s<S_{i}^{k}$,
+    \begin{align}
+        &\dfrac{1}{n_1+1}\overset{n_1+1}{\underset{j=1}\sum}\mathbbm{1}\left( S_j^1\leq Q(\tilde{\theta}_{i}^{k};\hat{F}_j^1(S_{i'}^{k'})) \right)\notag\\
+        =&\dfrac{1}{n_1+1}\overset{}{\underset{j\in A_1\cup A_2\cup A_3}\sum}\mathbbm{1}\left( M_{j,i}^{1,k} \right)\notag\\
+        =&\dfrac{1}{n_1+1}\left( \overset{}{\underset{j\in A_1}\sum}\mathbbm{1}\left( \tilde{\theta}_{i}^{k}>\theta_j^1+p_{n_1+1,j}^{1,1} \right)+\overset{}{\underset{j\in A_2}\sum}\mathbbm{1}\left( S_{i}^{k}>S_j^1,\tilde{\theta}_{i}^{k}>\theta_j^1 \right)+\overset{}{\underset{j\in A_3}\sum}\mathbbm{1}\left( S_{i}^{k}>S_j^1 \right) \right),\label{finalLen1}
+    \end{align}
+    indicates $s\in C_S(X_{n_1+1})\Leftrightarrow\text{(\ref{finalLen1})}<\alpha$. Find $S^*$ be the largest $S_i^k$ satisfies $\text{(\ref{finalLen1})}<\alpha$ and $C_S(X_{n_1+1})=[0,S^*]$.
+
+
+    \subsubsection{Method Procedure}
+    First all $Z_i^k,S_i^k,p_{j,i}^{1,k}$ are given.
+    \begin{itemize}
+        \item Calculate $\theta_j^1=\overset{}{\underset{S_i^k<S_j^1}\sum}p_{i,j}^{k,1},\tilde{\theta}_i^k=\overset{}{\underset{S_{i'}^{k'}<S_i^k}\sum}p_{n_1+1,i'}^{1,k'}=q(S_i^k)$
+        \item Find index sets
+        \begin{align*}
+            A_1&=\left\{ j:\tilde{\theta}_j^1>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}\\
+            A_2&=\left\{ j:\theta_i^1\geq\tilde{\theta}_j^1 \right\}\\
+            A_3&=\left\{ j:\theta_j^1<\tilde{\theta}_j^1\leq\theta_j^1+p_{n_1+1,j}^{1,1} \right\}.
+        \end{align*}
+        \item Order all $S_i^k$ and the $l$-th smallest denote as $S_{i(l)}^{k(l)}$. For $l=1,\cdots,N$ repeat
+        \begin{align*}
+            m_1&=\#\left\{ j\in A_1:\tilde{\theta}_{i(l)}^{k(l)}>\theta_j^1+p_{n_1+1,j}^{1,1} \right\}\\
+            m_2&=\#\left\{ j\in A_2:S_{i(l)}^{k(l)}>S_j^1,\tilde{\theta}_{i(l)}^{k(l)}>\theta_j^1 \right\}\\
+            m_3&=\#\left\{ j\in A_3:S_{i(l)}^{k(l)}>S_j^1 \right\}.
+        \end{align*}
+        Find $l^*$ be the largest $l$ makes $(m_1+m_2+m_3)/(n_1+1)<\alpha$.
+        \item $C_S(X_{n+1})=[0,S_{i(l^*)}^{k(l^*)}]$
+        \item Conformal set $C_\alpha(X_{n_1+1})=[f(X_{n_1+1})-S_{i(l^*)}^{k(l^*)},f(X_{n_1+1})+S_{i(l^*)}^{k(l^*)}]$.
+    \end{itemize}
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
