@@ -99,6 +99,24 @@ class Predictor(nn.Module):
             print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
 
 
+def SaveData(X, Y, loc, st):
+    num = X.shape[0]
+    np.save(f"data/pureCovariateShift/{st}_X.npy", X)
+    np.save(f"data/pureCovariateShift/{st}_Y.npy", Y)
+    np.save(f"data/pureCovariateShift/{st}_loc.npy", loc)
+    with open(f"data/pureCovariateShift/{st}_meta.txt", 'w', encoding='utf-8') as f:
+        f.write("生成不同 X 来自 N(loc, 3)\n")
+        f.write("对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)\n")
+        f.write(f"loc:{[round(i,2) for i in loc]}\n")
+        f.write(f"Agent num:{len(loc)}\n")
+        f.write(f"每个Agent拥有样本数:{num}")
+
+def LoadData(st):
+    X = np.load(f"data/pureCovariateShift/{st}_X.npy")
+    Y = np.load(f"data/pureCovariateShift/{st}_Y.npy")
+    loc = np.load(f"data/pureCovariateShift/{st}_loc.npy")
+    return X, Y, loc
+
 if __name__ == '__main__':
     X, Y = Xshift(500, [0, 0.1, 0.2, -0.05, 0.6, -1], fun)
     predictor = Predictor()

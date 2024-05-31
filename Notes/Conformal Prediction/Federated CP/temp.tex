@@ -327,6 +327,13 @@
         \item $C_S(X_{n+1})=[0,S_{i(l^*)}^{k(l^*)}]$
         \item Conformal set $C_\alpha(X_{n_1+1})=[f(X_{n_1+1})-S_{i(l^*)}^{k(l^*)},f(X_{n_1+1})+S_{i(l^*)}^{k(l^*)}]$.
     \end{itemize}
+
+
+\subsection{Experiment1}
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
+
+
+    Take $h=0.5$ and gaussian kernel function $K_h(X_1,X_2)=\dfrac{1}{h\sqrt{2\pi}}\exp\left( -\dfrac{(X_1-X_2)^2}{h^2} \right)$. Let $p_{i,j}^{1,k}=\phi(Z_i^1,Z_j^k;Z_1,Z_k)=K_h(X_i^1,X_j^k)$.
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}

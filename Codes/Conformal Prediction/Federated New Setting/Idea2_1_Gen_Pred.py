@@ -5,7 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
 
-# 生成不同 X 来自 N(loc, 3)
+# 生成不同 X 来自 N(loc, 2)
 # 对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
 
 ep = 0.5 # scale(sigma)
@@ -20,7 +20,7 @@ def Xshift(n, loc, f):
     X = np.zeros((n, len(loc)))
     Y = np.zeros((n, len(loc)))
     for i in range(len(loc)):
-        X[:, i] = np.random.normal(loc[i], 3, n)
+        X[:, i] = np.random.normal(loc[i], 2, n)
         Y[:, i] = f(X[:, i])
     return X, Y
 
@@ -99,7 +99,27 @@ class Predictor(nn.Module):
             print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
 
 
+def SaveData(X, Y, loc, st):
+    num = X.shape[0]
+    np.save(f"data/pureCovariateShift/{st}_X.npy", X)
+    np.save(f"data/pureCovariateShift/{st}_Y.npy", Y)
+    np.save(f"data/pureCovariateShift/{st}_loc.npy", loc)
+    with open(f"data/pureCovariateShift/{st}_meta.txt", 'w', encoding='utf-8') as f:
+        f.write("生成不同 X 来自 N(loc, 3)\n")
+        f.write("对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)\n")
+        f.write(f"loc:{[round(i,2) for i in loc]}\n")
+        f.write(f"Agent num:{len(loc)}\n")
+        f.write(f"每个Agent拥有样本数:{num}")
+
 if __name__ == '__main__':
-    X, Y = Xshift(500, [0, 0.1, 0.2, -0.05, 0.6, -1], fun)
-    predictor = Predictor()
-    predictor.train(X.reshape(-1,1), Y.reshape(-1,1))
+    X, Y = Xshift(500, [-10,-5,0,5,10], fun)
+    SaveData(X, Y, [-10, -5, 0, 5, 10], "FULL")
+    SaveData(X[:,2:], Y[:,2:], [0, 5, 10], "PART")
+    X, Y = Xshift(50, [-10, -10, -5, -5, 0, 5, 5, 10, 10], fun)
+    SaveData(X, Y, [-10, -10, -5, -5, 0, 5, 5, 10, 10], "SPARSEFULL")
+    SaveData(X[:, 4:], Y[:, 4:], [0, 5, 5, 10, 10], "SPARSEPART")
+    X, Y = Xshift(300, [0]+[12]*29, fun)
+    SaveData(X, Y, [0]+[12]*29, "FARFULL")
+    SaveData(X[:,[0]], Y[:,[0]], [0], "FARPART")
+    # predictor = Predictor()
+    # predictor.train(X.reshape(-1,1), Y.reshape(-1,1))
