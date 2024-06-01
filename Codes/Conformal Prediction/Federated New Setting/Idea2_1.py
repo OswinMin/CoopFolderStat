@@ -7,7 +7,13 @@ from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import hashlib
-
+"""
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
 h=0.5
 
 def calScore(X, Y, predictor):

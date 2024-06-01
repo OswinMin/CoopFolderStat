@@ -4,6 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
+"""
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
 
 # 生成不同 X 来自 N(loc, 3)
 # 对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
@@ -118,6 +125,7 @@ def LoadData(st):
     return X, Y, loc
 
 if __name__ == '__main__':
-    X, Y = Xshift(500, [0, 0.1, 0.2, -0.05, 0.6, -1], fun)
-    predictor = Predictor()
-    predictor.train(X.reshape(-1,1), Y.reshape(-1,1))
+    pass
+    # X, Y = Xshift(500, [0, 0.1, 0.2, -0.05, 0.6, -1], fun)
+    # predictor = Predictor()
+    # predictor.train(X.reshape(-1,1), Y.reshape(-1,1))

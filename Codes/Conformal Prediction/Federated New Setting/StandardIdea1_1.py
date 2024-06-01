@@ -1,4 +1,4 @@
-from Idea1_1_Gen_Pred import *
+from GenPredGeneral import *
 import numpy as np
 import torch
 import torch.nn as nn
@@ -88,7 +88,7 @@ def Test(X0:np.ndarray, X, Y, predictor):
     :return: Conf0(true) Conf1(predicted) P(true coverage)
     """
     Xtilde = [ReSampling(X0[i], h)[0] for i in range(len(X0))]
-    Conf0 = trueConf(X0)
+    Conf0 = trueConf1(X0)
     Conf1 = np.zeros_like(Conf0)
     P = np.zeros(len(Xtilde))
     Y0hat = predictor(torch.tensor(X0).reshape(-1, 1).float()).detach().numpy().reshape(-1)
@@ -101,27 +101,37 @@ def Test(X0:np.ndarray, X, Y, predictor):
             - stats.norm.cdf(Conf1[0,i], loc=X0[i]**2, scale=ep*np.abs(X0[i]))
     return Conf0, Conf1, P
 
-def Draw(X, Y, X0, Conf0, Conf1, loc, st):
+def Draw(X, Y, X0, Conf0, Conf1, para, st):
     cmap = cm.get_cmap('brg')
-    loc_ = np.unique(loc)
-    num_ = np.zeros_like(loc_)
-    for i in range(len(loc_)):
-        num_[i] = X.shape[0] * np.sum(loc==loc_[i])
-    title = f"loc: " + ','.join([f'{i:4}' for i in loc_]) + '\n' + \
-         f"num: " + ','.join([f'{i:4}' for i in num_])
+    para_ = np.unique(para, axis=1)
+    loc = para[0,:]
+    loc_ = para_[0,:]
+    sigma = para[1,:]
+    sigma_ = para_[1,:]
+    num_ = np.zeros(para_.shape[1])
+    for i in range(para_.shape[1]):
+        num_[i] = X.shape[0]*np.sum((loc==loc_[i])&(sigma==sigma_[i]))
+    title = f"    loc: " + ';'.join([f'{int(i):4}' if i.is_integer()
+                                    else f'{i:4}' for i in loc_]) + '\n' + \
+            f"sigma: " + ';'.join([f'{int(i):4}' if i.is_integer()
+                                    else f'{i:4}' for i in sigma_]) + '\n' + \
+            f"   num: " + ';'.join([f'{int(i):4}' if i.is_integer()
+                                    else f'{i:4}' for i in num_])
     if len(X.shape)==1:
         X = X.reshape((-1,1))
         Y = Y.reshape((-1,1))
     plt.figure(figsize=(8,6))
     norm = mcolors.Normalize(vmin=0, vmax=len(loc_) - 1)
     for j in range(len(loc_)):
-        x_ = X[:, loc==loc_[j]].reshape(-1)
-        y_ = Y[:, loc==loc_[j]].reshape(-1)
+        x_ = X[:, (loc==loc_[j])&(sigma==sigma_[j])].reshape(-1)
+        y_ = Y[:, (loc==loc_[j])&(sigma==sigma_[j])].reshape(-1)
         y_ = y_[(x_>min(X0))&(x_<max(X0))]
         x_ = x_[(x_>min(X0))&(x_<max(X0))]
         if len(x_) > 0:
-            plt.scatter(x_, y_, s=4, label=f"loc: {loc_[j]}",
-                        color=cmap(norm(j)), alpha=0.5)
+            plt.scatter(x_, y_, s=4,
+            label=f"({int(loc_[j]) if loc_[j].is_integer() else loc_[j]},"
+                f"{int(sigma_[j]) if sigma_[j].is_integer() else sigma_[j]})",
+            color=cmap(norm(j)), alpha=0.5)
     plt.plot(X0, Conf0[0,:], color='indianred', label='True', linewidth=2)
     plt.plot(X0, Conf0[1,:], color='indianred', linewidth=2)
     plt.plot(X0, Conf1[0,:], color='slateblue', label='Estimated', linewidth=2)
@@ -134,14 +144,15 @@ def Draw(X, Y, X0, Conf0, Conf1, loc, st):
     plt.show()
 
 if __name__ == '__main__':
-    h = 1.5
+    h = 1
     st = 'FULL'
-    X, Y, loc = LoadData(st)
+    X, Y, para = LoadData1(st)
     predictor = Predictor([16,8])
     predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=300)
     X0 = np.linspace(-5,5,100)
+    st =  'FARSPARSEPART'
     for st in ['FULL','PART','SPARSEFULL','SPARSEPART','FARFULL','FARPART']:
-        X, Y, loc = LoadData(st)
+        X, Y, para = LoadData1(st)
         Conf0_, Conf1_, P_ = Test(X0, X, Y, predictor)
-        Draw(X, Y, X0, Conf0_, Conf1_, loc, st)
+        Draw(X, Y, X0, Conf0_, Conf1_, para, st)
 

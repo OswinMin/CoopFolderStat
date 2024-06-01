@@ -1,5 +1,6 @@
-生成不同 X 来自 N(loc, 3)
+生成不同 X 来自 N(loc, sigma)
 对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
-loc:[0]
-Agent num:1
+  loc:   0.0
+sigma:   1.5
+Agent个数:1
 每个Agent拥有样本数:300

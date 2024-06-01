@@ -4,7 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
-
+"""
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
 # 生成不同 X 来自 N(loc, 2)
 # 对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
 
@@ -112,14 +118,15 @@ def SaveData(X, Y, loc, st):
         f.write(f"每个Agent拥有样本数:{num}")
 
 if __name__ == '__main__':
-    X, Y = Xshift(500, [-10,-5,0,5,10], fun)
-    SaveData(X, Y, [-10, -5, 0, 5, 10], "FULL")
-    SaveData(X[:,2:], Y[:,2:], [0, 5, 10], "PART")
-    X, Y = Xshift(50, [-10, -10, -5, -5, 0, 5, 5, 10, 10], fun)
-    SaveData(X, Y, [-10, -10, -5, -5, 0, 5, 5, 10, 10], "SPARSEFULL")
-    SaveData(X[:, 4:], Y[:, 4:], [0, 5, 5, 10, 10], "SPARSEPART")
-    X, Y = Xshift(300, [0]+[12]*29, fun)
-    SaveData(X, Y, [0]+[12]*29, "FARFULL")
-    SaveData(X[:,[0]], Y[:,[0]], [0], "FARPART")
+    pass
+    # X, Y = Xshift(500, [-10,-5,0,5,10], fun)
+    # SaveData(X, Y, [-10, -5, 0, 5, 10], "FULL")
+    # SaveData(X[:,2:], Y[:,2:], [0, 5, 10], "PART")
+    # X, Y = Xshift(50, [-10, -10, -5, -5, 0, 5, 5, 10, 10], fun)
+    # SaveData(X, Y, [-10, -10, -5, -5, 0, 5, 5, 10, 10], "SPARSEFULL")
+    # SaveData(X[:, 4:], Y[:, 4:], [0, 5, 5, 10, 10], "SPARSEPART")
+    # X, Y = Xshift(300, [0]+[12]*29, fun)
+    # SaveData(X, Y, [0]+[12]*29, "FARFULL")
+    # SaveData(X[:,[0]], Y[:,[0]], [0], "FARPART")
     # predictor = Predictor()
     # predictor.train(X.reshape(-1,1), Y.reshape(-1,1))

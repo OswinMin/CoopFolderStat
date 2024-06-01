@@ -9,6 +9,14 @@ import matplotlib.pyplot as plt
 import hashlib
 
 """
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
+
+"""
 True X has covariate shift
 True Y is same conditional on X
 Any new test X0
