@@ -4,7 +4,13 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import scipy.stats as stats
-
+"""
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
 ep = 0.5 # scale(sigma)
 def Xshift(n, loc, f):
     """

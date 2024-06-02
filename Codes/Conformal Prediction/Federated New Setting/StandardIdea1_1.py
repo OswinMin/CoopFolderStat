@@ -150,7 +150,6 @@ if __name__ == '__main__':
     predictor = Predictor([16,8])
     predictor.train(X.reshape(-1, 1), Y.reshape(-1, 1), epochs=300)
     X0 = np.linspace(-5,5,100)
-    st =  'FARSPARSEPART'
     for st in ['FULL','PART','SPARSEFULL','SPARSEPART','FARFULL','FARPART']:
         X, Y, para = LoadData1(st)
         Conf0_, Conf1_, P_ = Test(X0, X, Y, predictor)

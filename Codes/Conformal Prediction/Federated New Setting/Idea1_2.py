@@ -9,7 +9,13 @@ import matplotlib.pyplot as plt
 import hashlib
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
-
+"""
+！！！！！！！注意！！！！！！！！！
+        本文档代码已废弃
+           留存作备份
+          请勿运行代码
+！！！！！！！注意！！！！！！！！！
+"""
 h = 0.5
 
 

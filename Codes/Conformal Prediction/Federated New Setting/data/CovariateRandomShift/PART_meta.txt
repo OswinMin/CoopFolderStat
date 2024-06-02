@@ -1,0 +1,7 @@
+生成不同 X 来自 N(loc, sigma)
+对应 X 的 Y = X**2 + N(0, (ep*|X|)**2)
+  loc:     0,    5,   10
+sigma:   1.5,  0.5,  0.8
+theta:     0,    7,    6
+Agent个数:3
+每个Agent拥有样本数:500

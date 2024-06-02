@@ -10,6 +10,7 @@
 \setlength{\headheight}{15pt}
 \fancyhead[L]{\textit{\leftmark}}
 \fancyhead[R]{\thepage}
+% \renewcommand{\floatpagefraction}{.8}
 
 \title{\textbf{Federated CP New Setting}}
 \author{Min}
@@ -50,7 +51,7 @@
     However for all $k$ $P^k=P$ is not practical, potential covariate shift exists
 
 \subsection{Experiment1}
-    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,\sigma_k)$, $\sigma_k\in\{0.5,0.8,1,1.5,2\}$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
 
     \begin{itemize}
         \item $X$ has different distribution for each agents
@@ -59,92 +60,24 @@
     \end{itemize}
     
 
-    Covariate shift has little influence on this method as the method is localized. More on Fig \ref{Fig1}. $ep=h=0.5$
-    \begin{figure}[htbp]
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FULL.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/PART.png}
-        \end{minipage}
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/SPARSEFULL.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/SPARSEPART.png}
-        \end{minipage}
-        \caption{Fig1}
-        \label{Fig1}
-    \end{figure}
+    Covariate shift has little influence on this method as the method is localized. More on Fig \ref{Fig1} and \ref{Fig2}. $ep=h=0.5$
+    
 
-    Generate 1000 samples with location 0, and 1000 samples with location 0 and 20. The left shows the performance on only within samples with 0 location and 1000 samples is better than the right one using 2000 data samples. This comes from covariate shift, the scores from samples with location 20 influences origin behavior, from Fig \ref{Fig2}
-    \begin{figure}[htbp]
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARFULL.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARPART.png}
-        \end{minipage}
-        \caption{Fig2}
-        \label{Fig2}
-    \end{figure}
+    Generate 1000 samples with location 0, and 1000 samples with location 0 and 20. The left shows the performance on only within samples with 0 location and 1000 samples is better than the right one using 2000 data samples. This comes from covariate shift, the scores from samples with location 20 influences origin behavior, from Fig \ref{Fig3} and Fig \ref{Fig4}.
+    
 
 \subsection{Experiment2}
-    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|+ep*\theta_k)^2)$, $ep$ be some parameter and $\theta_k$ generated for each agent randomly between $1$ and $10$.
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,\sigma_k)$, $\sigma_k\in\{0.5,0.8,1,1.5,2\}$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|+ep*\theta_k)^2)$, $ep$ be some parameter and $\theta_k$ generated for each agent randomly between $3$ and $8$. Target agent has location $0$ and $\theta=0$.
     \begin{itemize}
         \item $X$ has different distribution for each agents
         \item $EY|X$ is same for all agents
         \item $Y-EY|X$ has different distribution for different agents
     \end{itemize}
 
-    The heterogeneity greatly influences the performance as this method treat data from different agents with same operation with respect to covariates. See in Fig \ref{Fig3}. $ep=h=0.5$.
-    \begin{figure}[htbp]
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5_10.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0}
-        \end{minipage}
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_6.png}
-        \end{minipage}
-        \caption{Fig3}
-        \label{Fig3}
-    \end{figure}
+    The heterogeneity greatly influences the performance as this method treat data from different agents with same operation with respect to covariates. See in Fig \ref{Fig5} and Fig \ref{Fig6}. $ep=h=0.5$.
 
 
-    To see how extra agent information influences performance, assume 4 agents with location 0, 5, 5, 10 and $\theta=(9.8, 2.1, 1.6, 6.3)$. Use only first agent data to estimate(left) and compare with the performance using all agents(right) in Fig \ref{Fig4}.
-    \begin{figure}[htbp]
-        \centering
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0_5_5_10.png}
-        \end{minipage}
-        \begin{minipage}{0.495\linewidth}
-            \centering
-            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/0.png}
-        \end{minipage}
-        \caption{Fig4}
-        \label{Fig4}
-    \end{figure}
+    To see how extra agent information influences performance, assume 4 agents with location 0, 5, 5, 10 and $\theta=(9.8, 2.1, 1.6, 6.3)$. Use only first agent data to estimate(left) and compare with the performance using all agents(right) in Fig \ref{Fig7} and Fig \ref{Fig8}.
 
 
 \newpage
@@ -330,11 +263,163 @@
 
 
 \subsection{Experiment1}
-    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,9)$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,\sigma_k)$, $\sigma_k\in\{0.5,0.8,1,1.5,2\}$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|)^2)$, $ep$ be some parameter. Under this problem only have covariate shift.
 
 
     Take $h=0.5$ and gaussian kernel function $K_h(X_1,X_2)=\dfrac{1}{h\sqrt{2\pi}}\exp\left( -\dfrac{(X_1-X_2)^2}{h^2} \right)$. Let $p_{i,j}^{1,k}=\phi(Z_i^1,Z_j^k;Z_1,Z_k)=K_h(X_i^1,X_j^k)$.
+
+
+    Use five agents as 'FULL' with location -10,-5,0,5,10 and each has 500 sample points, and the agent with location 0,5,10 in 'FULL' is 'PART'. Each agent has 500 sample points. The performance on this two datasets is shown in Fig \ref{Fig9}. Give each agent 50 samples name 'SPARSEFULL' and 'SPARSEPART', as shown in Fig \ref{Fig10}.
+
+\subsection{Experiment2}
+    Assume agent $k=1,\cdots,K$ each has $n$ samples $X_1^k,\cdots,X_n^k$ follow $N(\mu_k,\sigma_k)$, $\sigma_k\in\{0.5,0.8,1,1.5,2\}$. Sythesize $Y_i^k=(X_i^k)^2+\epsilon$, where $\epsilon\sim N(0,(ep*|X|+ep*\theta_k)^2)$, $ep$ be some parameter and $\theta_k$ generated for each agent randomly between $3$ and $8$. Target agent has location $0$ and $\theta=0$.
+
+    As each agent has $Y|X\sim X^2+ep*(|X|+\theta)\varepsilon$ where $\varepsilon\sim N(0,1)$.
 \newpage
+
+
+\section{Attachment}
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/PART.png}
+        \end{minipage}
+        \caption{Idea1. FULL \& PART, only covariate shift exists, each agent has enough data samples(500), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig1}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/SPARSEFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/SPARSEPART.png}
+        \end{minipage}
+        \caption{Idea1. SPARSEFULL \& SPARSEPART, only covariate shift exists, each agent has insufficient data samples(50), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig2}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARPART.png}
+        \end{minipage}
+        \caption{Idea1. FARFULL \& FARPART, only covariate shift exists, the location of other agents is far from agent 1. Each agent has enough data samples(300), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig3}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARSPARSEFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_1/FARSPARSEPART.png}
+        \end{minipage}
+        \caption{Idea1. FARSPARSEFULL \& FARSPARSEPART, only covariate shift exists, the location of other agents is far from agent 1. Each agent has insufficient data samples(40), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig4}
+    \end{figure}
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/FULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/PART.png}
+        \end{minipage}
+        \caption{Idea1. FULL \& PART, both covariate shift and label shift exist, the deviation of $Y|X$ is parameterized by some $\theta$. Each agent has enough data samples(500), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig5}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/SPARSEFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/SPARSEPART.png}
+        \end{minipage}
+        \caption{Idea1. SPARSEFULL \& SPARSEPART, both covariate shift and label shift exist, the deviation of $Y|X$ is parameterized by some $\theta$. Each agent has insufficient data samples(50), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig6}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/FARFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/FARPART.png}
+        \end{minipage}
+        \caption{Idea1. FARFULL \& FARPART, both covariate shift and label shift exist, the deviation of $Y|X$ is parameterized by some $\theta$. The location of other agents is far from agent 1. Each agent has enough data samples(500), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig7}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/FARSPARSEFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex1_2/FARSPARSEPART.png}
+        \end{minipage}
+        \caption{Idea1. FARFULL \& FARPART, both covariate shift and label shift exist, the deviation of $Y|X$ is parameterized by some $\theta$. The location of other agents is far from agent 1. Each agent has insufficient data samples(50), using random selected $\tilde{X}$ to find conformal set.}
+        \label{Fig8}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex2_1/FULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex2_1/PART.png}
+        \end{minipage}
+        \caption{Idea2. FULL \& PART, only covariate shift exists. Each agent has enough data samples(500), using selected $\alpha'$ to find conformal set. Kernel function $K_h(X_1,X_2)=\exp\left( -{(X_1-X_2)^2}/{h^2} \right)/(h\sqrt{2\pi})$.}
+        \label{Fig9}
+    \end{figure}
+
+    \begin{figure}[htbp]
+        \centering
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex2_1/SPARSEFULL.png}
+        \end{minipage}
+        \begin{minipage}{0.495\linewidth}
+            \centering
+            \includegraphics[width=0.98\linewidth]{fig/Ex2_1/SPARSEPART.png}
+        \end{minipage}
+        \caption{Idea2. FULL \& PART, only covariate shift exists. Each agent has insufficient data samples(50), using selected $\alpha'$ to find conformal set. Kernel function $K_h(X_1,X_2)=\exp\left( -{(X_1-X_2)^2}/{h^2} \right)/(h\sqrt{2\pi})$.}
+        \label{Fig10}
+    \end{figure}
+
+\newpage
+
 \bibliographystyle{plain}
 \bibliography{ref}
 \end{document}
