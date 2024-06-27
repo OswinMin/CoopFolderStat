@@ -12,7 +12,7 @@
 \fancyhead[R]{\thepage}
 
 \title{\textbf{Localized Conformal Prediction}}
-\author{Min, Xia}
+\author{Min}
 \date{\today}
 \linespread{1.6}
 \definecolor{lightBlue}{rgb}{0.274,0.41,0.879}
@@ -195,6 +195,74 @@
 
 
     The coverage $\mathbb{P}(Y_{n+1}\in C_\alpha(X_{n+1}))\geq 1-\alpha$ according to Tibshirani\cite{tibshirani2019conformal}.
+
+
+    This method has certain local conditional coverage property. Start with a covariate shift setting.
+    \begin{theorem}
+        Assume $X_1,\cdots,X_n\sim P_X,X_{n+1}\sim P_X\circ g,Y|X\sim P_{Y|X}$, where $P_X\circ g$ has density $\varpropto P_X(x)g(x)$. $g(x)$ is propotional to the density ratio. Assume $M=||g||_\infty$ and $L_{g,2\epsilon,A}=\underset{x,x'\in A,||x-x'||\leq 2\epsilon}{\sup}|g(x)-g(x')|/2\epsilon$,
+        \begin{align*}
+            \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)\geq 1-\alpha-\dfrac{\underset{A\subset\mathcal{X},\epsilon>0}{\inf}\left( \epsilon L_{g,2\epsilon,A}+M\left( \mathbb{P}\left( ||X-\tilde{X}||>\epsilon \right)+P_X(A^C) \right) \right)}{E_{P_X}g(X)}.
+        \end{align*}
+    \end{theorem}
+    To see this, fixed $\tilde{X}$ which is generated with kernel $H(\cdot,X_{n+1})$ based on $X_{n+1}\sim P_X\circ g$. Assume $X_{n+1}'|\tilde{X}\sim P_X\circ H(\cdot,\tilde{X}),Y_{n+1}'|X_{n+1}'\sim P_{Y|X}$. Use the marginal coverage property
+    \begin{equation}
+        \mathbb{P}\left( Y_{n+1}'\in C_\alpha(X_{n+1}')\Big|\tilde{X} \right)\geq 1-\alpha.\label{formula1}
+    \end{equation}
+
+
+    A commonly used lemma is
+    \begin{lemma}
+        Assume two random variables $Z,Z'$, sharing common sample space $\mathcal{Z}$, have density $p(z)$ and $p'(z')$, the total variation is defined as $d_{TV}(Z,Z')=\int |p(z)-p'(z)|dz/2$. For any $A\subset \mathcal{Z}$,
+        \begin{equation*}
+            \Big|\mathbb{P}(Z\in A)-\mathbb{P}(Z'\in A)\Big|\leq d_{TV}(Z,Z').
+        \end{equation*}
+    \end{lemma}
+
+
+    Consider $\mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1}) \right)$ according to formula \ref{formula1},
+    \begin{equation*}
+        \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|\tilde{X} \right)\geq 1-\alpha-d_{TV}(X_{n+1},X_{n+1}'),
+    \end{equation*}
+    note $d_{TV}(X_{n+1},X_{n+1}')$ is calculated conditional on $\tilde{X}$. Condition on $\tilde{X}$, $X_{n+1}$ has density $P_X(x)\circ g(x)\circ H(x,\tilde{X})$, and $X_{n+1}'$ has $P_X(x)\circ H(x,\tilde{X})$, to be specific
+    \begin{equation*}
+        \dfrac{d(P_X\circ g\circ H(\cdot,\tilde{X}))(x)}{d(P_X\circ H(\cdot,\tilde{X}))(x)}=g(x)\dfrac{\int H(x',\tilde{X})dP_X(x')}{\int g(x')H(x',\tilde{X})dP_X(x')}=\dfrac{g(x)}{E_{X'\sim P_X\circ H(\cdot,\tilde{X})}\left[ g(X') \right]},
+    \end{equation*}
+    thus as $d_{TV}(p,q)=\int|p(x)-q(x)|dx/2=\int|p(x)/q(x)-1|dQ(x)/2=E_Q|p/q-1|/2$, and the denominator of the last formula only depends on $\tilde{X}$ which is constant condition on $\tilde{X}$, we have
+    \begin{align*}
+        d_{TV}(X_{n+1},X_{n+1}')&=\dfrac{1}{2}E_{X\sim P_X\circ H(\cdot,\tilde{X})}\left\{ \Big|\dfrac{g(X)}{E_{X'\sim P_X\circ H(\cdot,\tilde{X})}\left[ g(X') \right]}-1\Big| \right\}\\
+        &=\dfrac{E_{X\sim P_X\circ H(\cdot,\tilde{X})}\left\{ g(X)-E_{X'\sim P_X\circ H(\cdot,\tilde{X})}\left[ g(X') \right] \right\}}{2E_{X'\sim P_X\circ H(\cdot,\tilde{X})}\left[ g(X') \right]}\\
+        \text{(Jensen's Inequality)}&\leq\dfrac{E_{X,X'\sim P_X\circ H(\cdot,\tilde{X})}\Big|g(X)-g(X')\Big|}{2E_{X'\sim P_X\circ H(\cdot,\tilde{X})}\left[ g(X') \right]}\\
+        &=\dfrac{E_{P_X}H(X,\tilde{X})}{2E_{P_X}g(X)H(X,\tilde{X})}E_{X,X'\sim P_X\circ H(\cdot,\tilde{X})}\Big|g(X)-g(X')\Big|
+    \end{align*}
+    Now take expectation on $\tilde{X}$ which has density $d\tilde{P}_{\tilde{X}}(x)=\dfrac{\int H(X,x)P_X(X)g(X)dX}{\int P_X(X)g(X)dX}dx$. Further assume $dP_{\tilde{X}}(x)=\int H(X,x)P_X(X)dXdx$, thus
+    \begin{align*}
+        &E_{\tilde{X}\sim\tilde{P}_{\tilde{X}}}d_{TV}(X_{n+1},X_{n+1}')\\
+        \leq&\int \dfrac{E_{P_X}H(X,\tilde{X})}{2E_{P_X}g(X)H(X,\tilde{X})}\dfrac{\int H(X,\tilde{X})P_X(X)g(X)dX}{\int P_X(X)g(X)dX}E_{X,X'\sim P_X\circ H(\cdot,\tilde{X})}\Big|g(X)-g(X')\Big|d\tilde{X}\\
+        =&\int\dfrac{E_{P_X}H(X,\tilde{X})}{2E_{P_X}g(X)}E_{X,X'\sim P_X\circ H(\cdot,\tilde{X})}\Big|g(X)-g(X')\Big|d\tilde{X}\\
+        =&\dfrac{E_{\tilde{X}\sim P_{\tilde{X}}}E_{X,X'\sim P_X\circ H(\cdot,\tilde{X})}\Big|g(X)-g(X')\Big|}{2E_{P_X}g(X)},
+    \end{align*}
+    if $X,X'\in A,|X-X'|<2\epsilon$, $|g(X)-g(X')|\leq 2\epsilon L_{g,2\epsilon,A}$, otherwise $|g(X)-g(X')|\leq 2M$. Write $E_A=\left\{ X,X'\in A,|X-X'|<2\epsilon \right\}$,
+    \begin{equation*}
+        E_A^C\subset \left\{ X\notin A\text{ or }X'\notin A\text{ or }|g(X)-g(\tilde{X})|>\epsilon\text{ or }|g(X')-g(\tilde{X})|>\epsilon \right\}.
+    \end{equation*}
+    Thus the probability over $E_A^C$ is bounded, based on $X|\tilde{X}\sim P_{\tilde{X}}$ has distribution $P_X\circ H(\cdot,\tilde{X})$,
+    \begin{align*}
+        E_{P_{\tilde{X}}}\mathbb{P}(E_A^C)&\leq 2E_{P_{\tilde{X}}}\left\{ \mathbb{P}_{X\sim P_X\circ H(\cdot,\tilde{X})}\left[ X\notin A\text{ or }|g(X)-g(\tilde{X})|>\epsilon \right] \right\}\\
+        &\leq 2E_{P_{\tilde{X}}}\left\{ \mathbb{P}_{X\sim P_X\circ H(\cdot,\tilde{X})}\left[ X\notin A\right]+\mathbb{P}_{X\sim P_X\circ H(\cdot,\tilde{X})}\left[ |g(X)-g(\tilde{X})|>\epsilon \right] \right\}\\
+        &=2\mathbb{P}_{X\sim P_X}(A^C)+2\mathbb{P}_{X\sim P_X,\tilde{X}\sim P_{\tilde{X}}}\left( |g(X)-g(\tilde{X})|>\epsilon \right),
+    \end{align*}
+    holds for any $A$, take inferior limit gives the result. 
+
+
+    Next consider conditional coverage property.
+    \begin{theorem}
+        Assume $(X_1,Y_1),\cdots,(X_{n+1},Y_{n+1})\overset{i.i.d}{\sim}P$, for any $B\subset\mathcal{X}$, it holds that
+        \begin{equation*}
+            \mathbb{P}\left( Y_{n+1}\in C_\alpha(X_{n+1})\Big|X_{n+1}\in B \right)\geq 1-\alpha-\dfrac{\underset{\epsilon>0}{\inf}\left\{ P_X(bd_{2\epsilon}(B))+P_{X,\tilde{X}}\left( ||X-\tilde{X}||>\epsilon \right) \right\}}{P_X(B)},
+        \end{equation*}
+        where $bd_{2\epsilon}(B)=\left\{ x\in B:\underset{x'\in B^C}{\inf}||x-x'||\leq 2\epsilon\right\}$.
+    \end{theorem}
+    This theorem is easy to prove using previous theorem. Take $g(x)=\mathbbm{1}(x\in B)$ and $A=(bd_{2\epsilon}(B))^C$. For any $x,x'\in A$, either $x,x'\in B$ or $x,x'\in B^C$ which leads to $g(x)=g(x')$ and $L_{g,2\epsilon,A}=0$. Also $E_{P_X}g(X)=P_X(B)$ and $M=||g||_\infty=1$.
 \newpage
 \bibliographystyle{plain}
 \bibliography{ref}
